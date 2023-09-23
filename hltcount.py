@@ -2,6 +2,7 @@ import json
 import argparse
 
 from util.oms import omsapi
+import util.utility as u
 
 def getcount(runlumijson, path, omsapi = omsapi):
     q = omsapi.query("hltpathrates")
@@ -41,6 +42,7 @@ if __name__ == "__main__":
     outputfile = 'outcsv/hltcount.csv'
     if args.outcsv != None:
         outputfile = args.outcsv
+    u.mkdir(outputfile)
     print("Write to output file: " + outputfile)
 
     lumiRangesStr = args.lumiranges.split(",")
