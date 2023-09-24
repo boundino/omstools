@@ -101,26 +101,19 @@ def get_lumis_by_run(run, omsapi = omsapi):
     return data
 
 def get_json_by_lumi(data):
-   lumijson = {}
-   for ls in data:
-       thisrun = ls["attributes"]["run_number"]
-       thisls = ls["attributes"]["lumisection_number"]
-       if thisrun not in ls:
-           newele = [thisls, thisls]
-           runlumi[thisrun] = []
-           runlumi[thisrun].append(newele)
-       else:
-           treat = 0
-           for ls in runlumi[thisrun]:
-               if thismin <= ls[0]:
-                   ls[0] = thismin
-                   treat = 1
-               if thismax >= ls[1]:
-                   ls[1] = thismax
-                   treat = 1
-           if treat == 0:
-               newele = [thismin, thismax]
-               runlumi[thisrun].append(newele)
+    lumijson = {}
+    for ls in data:
+        thisrun = str(ls["attributes"]["run_number"])
+        thisls = ls["attributes"]["lumisection_number"]
+        if thisrun not in lumijson:
+            lumijson[thisrun] = []
+        lumijson[thisrun].append(thisls)
+
+    for run in lumijson:
+        lumiranges = u.merge_json_array(lumijson[run])
+        lumijson[run] = lumiranges
+
+    return lumijson
 
 def get_hltconfig_info(key, omsapi = omsapi):
     q = omsapi.query("hltconfigdata")
@@ -150,8 +143,8 @@ def print_lumi_info(d):
                                   round(attr["recorded_lumi"]*recorded_lumi_unit, 3)
                                   ))
 
-def get_runs_by_time(start_time, end_time):
-    q = omsapi.query("runs")
+def get_runs_by_time(start_time, end_time, category = "runs"):
+    q = omsapi.query(category)
     q.set_verbose(False)
     q.filter("start_time", start_time, "GE").filter("end_time", end_time, "LE")
     datas = []
@@ -162,7 +155,7 @@ def get_runs_by_time(start_time, end_time):
         qjson = q.data().json()
         data = qjson["data"]
         if not data:
-            print("\033[31merror: no interesting runs: \"\033[4m" + start_time + ", " + end_time + "\033[0m\033[31m\", give up..\033[0m")
+            print("\033[31merror: no interesting " + category + " during: \"\033[4m" + start_time + ", " + end_time + "\033[0m\033[31m\", give up..\033[0m")
             sys.exit()
         datas.extend(data)
         if qjson["links"]["next"] is None:

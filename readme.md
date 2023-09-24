@@ -33,15 +33,21 @@ CLIENT_SECRET = 'example_secret'
 ### `hltcount.py`
 * Print HLT counts in given lumi ranges of runs
 ```
+usage: hltcount.py [-h] (--lumiranges LUMIRANGES | --timerange TIMERANGE) --pathnames PATHNAMES [--outcsv OUTCSV]
+
+Print HLT counts in given lumi ranges of runs
+
 options:
   -h, --help            show this help message and exit
   --lumiranges LUMIRANGES
-                        <run>(:<minLS>:<maxLS>) e.g. 373664:25:30,373710 || (option 2) cert json file
+                        (option 1) <run>(:<minLS>:<maxLS>) e.g. 373664:25:30,373710 || (option 2) cert json file
+  --timerange TIMERANGE
+                        (option 3) <start_time>,<end_time>
   --pathnames PATHNAMES
                         e.g. HLT_ZeroBias_v8,HLT_PPRefL1SingleMu7_v1
   --outcsv OUTCSV       Optional csv output file
 ```
-* Example 1
+* Example 1 (Use lumiranges)
     - Command
     ```
     python3 hltcount.py --lumiranges 373710:100:150 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
@@ -59,7 +65,7 @@ options:
     ------------------------------------------------------------
     ```
 
-* Example 2
+* Example 2 (Use json)
     - Command
     ```
     python3 hltcount.py --lumiranges Cert_Collisions2022HISpecial_362293_362323_Golden.json --pathnames HLT_HIMinimumBias_v2
@@ -72,6 +78,24 @@ options:
     |                                HLT Path |          Count |
     ------------------------------------------------------------
     |                    HLT_HIMinimumBias_v2 |       34031546 |
+    ------------------------------------------------------------
+    ```
+
+* Example 3 (Use time range)
+    - Command
+    ```
+    python3 hltcount.py --timerange 2023-09-19T19:00,2023-09-20T05:00 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
+    ```
+    - Screen
+    ```
+    Write to output file: outcsv/hltcount.csv
+    Summing up lumi sections: {'373664': [[62, 194]], '373681': [[1, 45], [47, 134]], '373697': [[1, 151]], '373703': [[1, 112]], '373705': [[1, 186]], '373710': [[1, 832]]}
+    ------------------------------------------------------------
+    |                                HLT Path |          Count |
+    ------------------------------------------------------------
+    |                         HLT_ZeroBias_v8 |         410750 |
+    |                 HLT_PPRefGEDPhoton40_v1 |          45441 |
+    |                      HLT_AK4PFJet100_v1 |          83710 |
     ------------------------------------------------------------
     ```
 

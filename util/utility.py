@@ -21,3 +21,22 @@ def transfer_to_nb(unit):
         return 1.e-3
     print("warning: unrecognized unit: "+unit)
     return 1
+
+def merge_json_array(source):
+    source.sort()
+    result = []
+    thismin = -1
+    thismax = -1
+    for s in source:
+        if thismin < 0:
+            thismin = s
+            thismax = s
+            continue
+        if s == (thismax + 1):
+            thismax = s
+        else:
+            result.append([thismin, thismax])
+            thismin = s
+            thismax = s
+    result.append([thismin, thismax])
+    return result
