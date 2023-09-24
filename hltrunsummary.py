@@ -8,7 +8,7 @@ import util.utility as u
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Print HLT summary of a given run')
     parser.add_argument('--run', required = True, help = 'one run number')
-    parser.add_argument('--pathnames', required = False, help = 'e.g. HLT_ZeroBias_v8,HLT_PPRefL1SingleMu7_v1')
+    parser.add_argument('--pathnames', required = False, help = 'Optional HLT paths')
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
     args = parser.parse_args()
     
