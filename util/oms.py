@@ -37,7 +37,7 @@ def get_run_info(run, verbose, omsapi = omsapi):
 
     return data[0]
 
-def print_run(data):
+def print_run(data, tounit = "mub"):
     attr = data["attributes"]
     print("Run summary: [\033[1;4m" + data["id"] + "\033[0m] (\033[1;4m" + attr["fill_type_party1"] + " - " + attr["fill_type_party2"] + "\033[0m)")
     print("    Stable: ", end = "")
@@ -52,14 +52,14 @@ def print_run(data):
         else:
             print("    "+att["desc"]+": \033[4mNone\033[0m")
 
-    delivered_lumi_unit = u.transfer_to_nb(data["meta"]["row"]["delivered_lumi"]["units"])
-    recorded_lumi_unit = u.transfer_to_nb(data["meta"]["row"]["recorded_lumi"]["units"])
+    delivered_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["delivered_lumi"]["units"], tounit)
+    recorded_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["recorded_lumi"]["units"], tounit)
     
     print("    HLT physics throughput: \033[4m" + str(round(attr["hlt_physics_throughput"], 2)) + "\033[0m GB/s")
     print("    L1 rate: \033[4m" + str(attr["l1_rate"]) + "\033[0m Hz")
-    print("    Lumi (recorded / delivered): \033[4m" + str(round(attr["recorded_lumi"]*recorded_lumi_unit, 2)) + "\033[0m / \033[4m" + str(round(attr["delivered_lumi"]*delivered_lumi_unit, 2)) + "\033[0m nb-1")
+    print("    Lumi (recorded / delivered): \033[4m" + str(round(attr["recorded_lumi"]*recorded_lumi_unit, 2)) + "\033[0m / \033[4m" + str(round(attr["delivered_lumi"]*delivered_lumi_unit, 2)) + "\033[0m mub-1")
 
-def print_run_line(data):
+def print_run_line(data, tounit = "mub"):
     attr = data["attributes"]
 
     if attr["stable_beam"]:
@@ -67,8 +67,8 @@ def print_run_line(data):
     else:
         print('|{:>7} | \033[31;7m{:>5} \033[0m '.format(data["id"], "No"), end = "")
 
-    delivered_lumi_unit = u.transfer_to_nb(data["meta"]["row"]["delivered_lumi"]["units"])
-    recorded_lumi_unit = u.transfer_to_nb(data["meta"]["row"]["recorded_lumi"]["units"])
+    delivered_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["delivered_lumi"]["units"], tounit)
+    recorded_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["recorded_lumi"]["units"], tounit)
     
     print('|{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format(attr["fill_number"],
                                                                                  attr["start_time"].replace("T", " ").replace("Z", ""), attr["end_time"].replace("T", " ").replace("Z", ""),
@@ -76,7 +76,7 @@ def print_run_line(data):
                                                                                  round(attr["l1_rate"], 1), round(attr["hlt_physics_throughput"], 2),
                                                                                  attr["hlt_key"]))
 
-def print_run_title(onlyline = False):
+def print_run_title(onlyline = False, unit = "mub"):
     if not onlyline:
         print('-' * 156)
         print('|{:>7} | {:>6} |{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format("", "", "",
@@ -85,7 +85,7 @@ def print_run_title(onlyline = False):
                                                                                                     "L1 rate", "HLT", ""))
         print('|{:>7} | {:>6} |{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format("Run", "Stable", "Fill",
                                                                                                     "Start time", "End time",
-                                                                                                    "(nb-1)", "(nb-1)",
+                                                                                                    "("+unit+"-1)", "("+unit+"-1)",
                                                                                                     "(Hz)", "(GB/s)", "HLT menu")) 
     print('-' * 156)
     
@@ -126,7 +126,7 @@ def get_hltconfig_info(key, omsapi = omsapi):
         return None
     return data
 
-def print_lumi_info(d):
+def print_lumi_info(d, tounit = "mub"):
     attr = d["attributes"]
     print('    {:>5}'.format(attr["lumisection_number"]), end = "")
     if attr["beams_stable"]:
@@ -134,8 +134,8 @@ def print_lumi_info(d):
     else:
         print('\033[31;1m{:>9}\033[0m'.format("No"), end = "")
 
-    delivered_lumi_unit = u.transfer_to_nb(d["meta"]["row"]["delivered_lumi"]["units"])
-    recorded_lumi_unit = u.transfer_to_nb(d["meta"]["row"]["recorded_lumi"]["units"])
+    delivered_lumi_unit = u.translate_lumi_unit(d["meta"]["row"]["delivered_lumi"]["units"], tounit)
+    recorded_lumi_unit = u.translate_lumi_unit(d["meta"]["row"]["recorded_lumi"]["units"], tounit)
         
     print('{:>18} {:>18} {:>10} {:>10}'.format(attr["start_time"].replace("T", " ").replace("Z", ""),
                                   attr["end_time"].replace("T", " ").replace("Z", ""),
@@ -162,3 +162,16 @@ def get_runs_by_time(start_time, end_time, category = "runs"):
             break;
         ipage = ipage+1
     return datas
+
+def get_hltlist_by_run(run):
+    q = omsapi.query("hltpathinfo")
+    q.set_verbose(False)
+    q.paginate(per_page = 3000)
+    q.filter("run_number", run)
+    data = q.data().json()["data"]
+    
+    hltlist = []
+    for d in data:
+        hltlist.append(d["attributes"]["path_name"])
+
+    return hltlist

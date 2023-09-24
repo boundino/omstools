@@ -12,15 +12,24 @@ def setoutput(argout, default):
     print("\nWrite to output file: \033[37;4m" + outputfile + "\033[0m")
     return outputfile
 
-def transfer_to_nb(unit):
+def translate_lumi_unit(unit, tounit):
+    sf = 0.
+    # default: mub
     if "pb" in unit:
-        return 1.e3
-    if "nb" in unit:
-        return 1.
-    if "\mu" in unit:
-        return 1.e-3
-    print("warning: unrecognized unit: "+unit)
-    return 1
+        sf = 1.e6
+    elif "nb" in unit:
+        sf = 1.e3
+    elif "\mu" in unit:
+        sf = 1.
+
+    if "nb" in tounit:
+        sf = sf * 1.e-3
+    elif "pb" in tounit:
+        sf = sf * 1.e-6
+
+    if sf == 0:
+        print("warning: unrecognized unit (tounit): " + unit + " ("+tounit+")")
+    return sf
 
 def merge_json_array(source):
     source.sort()
@@ -40,3 +49,8 @@ def merge_json_array(source):
             thismax = s
     result.append([thismin, thismax])
     return result
+
+def mystr(item):
+    if item:
+        return str(item)
+    return "null"

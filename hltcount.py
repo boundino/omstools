@@ -40,8 +40,7 @@ if __name__ == "__main__":
     parser.add_argument('--pathnames', required = True, help = 'e.g. HLT_ZeroBias_v8,HLT_PPRefL1SingleMu7_v1')
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
     args = parser.parse_args()
-    
-    pathsStr = args.pathnames.split(",")
+
     outputfile = u.setoutput(args.outcsv, "outcsv/hltcount.csv")
 
     runlumi = {}
@@ -93,6 +92,12 @@ if __name__ == "__main__":
     print("Summing up lumi sections: \033[4;32;1m", end = "")
     print(runlumi, end = "")
     print("\033[0m")
+
+    pathsStr = []
+    if args.pathnames:
+        pathsStr = args.pathnames.split(",")
+    elif list(runlumi.keys()):
+        pathsStr = o.get_hltlist_by_run(list(runlumi.keys())[0])
     
     counts = {}
     with open(outputfile, 'w') as f:

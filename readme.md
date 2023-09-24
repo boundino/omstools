@@ -31,11 +31,9 @@ CLIENT_SECRET = 'example_secret'
 ```
 
 ### `hltcount.py`
-* Print HLT counts in given lumi ranges of runs
+* Print HLT counts in given lumi ranges of run:lumis
 ```
 usage: hltcount.py [-h] (--lumiranges LUMIRANGES | --timerange TIMERANGE) --pathnames PATHNAMES [--outcsv OUTCSV]
-
-Print HLT counts in given lumi ranges of runs
 
 options:
   -h, --help            show this help message and exit
@@ -102,17 +100,17 @@ options:
 ### `hltrunsummary.py`
 * Print HLT summary of a given run
 ```
+usage: hltrunsummary.py [-h] --run RUN [--outcsv OUTCSV]
+
 options:
-  -h, --help            show this help message and exit
-  --run RUN             one run number
-  --pathnames PATHNAMES
-                        Optional HLT paths
-  --outcsv OUTCSV       Optional csv output file
+  -h, --help       show this help message and exit
+  --run RUN        one run number
+  --outcsv OUTCSV  Optional csv output file
 ```
 * Example
     - Command
     ```
-    python3 hltrunsummary.py --run 373710 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
+    python3 hltrunsummary.py --run 373710 
     ```
     - Screen
     ```
@@ -127,11 +125,46 @@ options:
         Lumi (recorded / delivered): 417.27 / 427.04 nb-1
     
     Write to output file: outcsv/hltrunsummary.csv
-    -----------------------------------------------------------------------------------------------------------------------------------------------
-    |                                HLT Path |                                 L1 seed |      Rate (Hz) |        L1 Pass |   PS Pass |  Accepted |
-    -----------------------------------------------------------------------------------------------------------------------------------------------
-    |                         HLT_ZeroBias_v8 |                             L1_ZeroBias |       19.70777 |      465028762 |    464909 |    464909 |
-    |                 HLT_PPRefGEDPhoton40_v1 |                           L1_SingleEG21 |        2.25688 |         996458 |    996458 |     53240 |
-    |                      HLT_AK4PFJet100_v1 |                          L1_SingleJet60 |        4.14754 |        1765972 |   1765972 |     97841 |
-    -----------------------------------------------------------------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------------------------------------------------------------------------------------
+    |                                     HLT Path |      Rate (Hz) |        L1 Pass |   PS Pass |  Accepted |                                           L1 seed |
+    --------------------------------------------------------------------------------------------------------------------------------------------------------------
+    |                         HLT_AK4CaloJet100_v1 |        4.75843 |        1765972 |   1765972 |    112252 |                                    L1_SingleJet60 |
+    |                         HLT_AK4CaloJet120_v1 |        1.99011 |         268428 |    268428 |     46947 |                                    L1_SingleJet90 |
+    |                          HLT_AK4CaloJet40_v1 |            0.0 |      465028762 |         0 |         0 |                                       L1_ZeroBias |
+    ......
+    |                      HLT_ZDCCommissioning_v1 |            0.0 |      465028762 |         0 |         0 |                                       L1_ZeroBias |
+    |                     HLT_ZeroBias_Beamspot_v9 |       13.18594 |      465028762 |    464909 |    311058 |                                       L1_ZeroBias |
+    |  HLT_ZeroBias_FirstCollisionAfterAbortGap_v7 |        4.93346 |         232890 |    116381 |    116381 |                          L1_FirstCollisionInOrbit |
+    |                              HLT_ZeroBias_v8 |       19.70777 |      465028762 |    464909 |    464909 |                                       L1_ZeroBias |
+    --------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ```
+
+### `listruns.py`
+* Print runs of interest in a given time range
+```
+usage: listruns.py [-h] --timemin TIMEMIN [--timemax TIMEMAX] [--stable] [--unit {mub,nb,pb}]
+
+options:
+  -h, --help          show this help message and exit
+  --timemin TIMEMIN   Start date, e.g. 2023-09-19T18:00:00
+  --timemax TIMEMAX   Optional End date, e.g. 2023-09-20
+  --stable            Optional requiring stable beam runs
+  --unit {mub,nb,pb}  Optional lumi unit
+```
+* Example
+    - Command
+    ```
+    python3 listruns.py --timemin 2018-11-28T04:00:00 --timemax 2018-11-28T18:00:00 --unit mub
+    ```
+    - Screen
+    ```
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------
+    |        |        |      |                     |                     |  Record | Deliver |   L1 rate |     HLT |                                           |
+    |    Run | Stable | Fill |          Start time |            End time | (mub-1) | (mub-1) |      (Hz) |  (GB/s) |                                  HLT menu |
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------
+    | 327403 |   Yes  | 7480 | 2018-11-28 04:45:37 | 2018-11-28 07:05:04 |    9.21 |    9.57 |   30746.0 |    0.98 |     /cdaq/physics/Run2018HI/v2.0.0/HLT/V2 |
+    | 327418 |    No  | 7481 | 2018-11-28 08:31:31 | 2018-11-28 08:58:17 |     0.0 |     0.0 |    1196.6 |    0.01 |     /cdaq/physics/Run2018HI/v2.0.0/HLT/V2 |
+    | 327424 |   Yes  | 7481 | 2018-11-28 09:41:35 | 2018-11-28 10:14:26 |    4.24 |     8.2 |   10773.7 |    0.62 |     /cdaq/physics/Run2018HI/v2.0.0/HLT/V2 |
+    | 327430 |   Yes  | 7481 | 2018-11-28 10:23:53 | 2018-11-28 17:26:17 |   60.74 |    62.6 |   22326.7 |    1.37 |     /cdaq/physics/Run2018HI/v2.0.0/HLT/V2 |
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------
     ```

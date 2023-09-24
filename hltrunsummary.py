@@ -8,7 +8,6 @@ import util.utility as u
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Print HLT summary of a given run')
     parser.add_argument('--run', required = True, help = 'one run number')
-    parser.add_argument('--pathnames', required = False, help = 'Optional HLT paths')
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
     args = parser.parse_args()
     
@@ -19,42 +18,37 @@ if __name__ == "__main__":
     hltconfig = o.get_hltconfig_info(rundetails["attributes"]["hlt_key"])
     if not hltconfig: sys.exit()
 
-    if args.pathnames is None: sys.exit()
-
-    pathsStr = args.pathnames.split(",")
-    
     q = o.omsapi.query("hltpathinfo")
     q.paginate(per_page = 1000)
     q.set_verbose(False)
+    q.filter("run_number", run)
+    data = q.data().json()["data"]
 
     outputfile = u.setoutput(args.outcsv, 'outcsv/hltrunsummary.csv')
     results = []
     with open(outputfile, 'w') as f:
         print("HLT Path, L1 seed, Rate (Hz), L1 Pass, PS Pass, Accepted", file = f)
-        for path in pathsStr:
-            q.clear_filter()
-            q.filter("path_name", path).filter("run_number", run)
-            data = q.data().json()["data"]
-            if not data:
-                print("\033[31merror: bad path name or run number: \"\033[4m" + path + ", " + run + "\033[0m\033[31m\", skip it..\033[0m")
+        for d in data:
+            attr = d["attributes"]
+            if "HLT_" not in attr["path_name"]:
                 continue
-            config = o.get_item_data(hltconfig, "path_name", path)
-            ele = {"path" : path,
-                   "l1_prerequisite" : config["attributes"]["l1_prerequisite"],
-                   "rate" : str(data[0]["attributes"]["rate"]),
-                   "l1_pass" : str(data[0]["attributes"]["l1_pass"]),
-                   "ps_pass" : str(data[0]["attributes"]["ps_pass"]),
-                   "accepted" : str(data[0]["attributes"]["accepted"]),
+            config = o.get_item_data(hltconfig, "path_name", attr["path_name"])
+            ele = { "path" : attr["path_name"],
+                    "l1_prerequisite" : config["attributes"]["l1_prerequisite"],
+                    "rate" : str(attr["rate"]),
+                    "l1_pass" : str(attr["l1_pass"]),
+                    "ps_pass" : str(attr["ps_pass"]),
+                    "accepted" : str(attr["accepted"]),
                    }
             for e in ele:
-                print(ele[e] + ", ", end = "", file = f)
+                print(u.mystr(ele[e]) + ", ", end = "", file = f)
             print("", file = f)
             results.append(ele)
 
-    print('-' * (130+13))
-    print('|{:>40} |{:>40} |{:>15} |{:>15} |{:>10} |{:>10} |'.format("HLT Path", "L1 seed", "Rate (Hz)", "L1 Pass", "PS Pass", "Accepted"))
-    print('-' * (130+13))
+    print('-' * 158)
+    print('|{:>45} |{:>15} |{:>15} |{:>10} |{:>10} |{:>50} |'.format("HLT Path", "Rate (Hz)", "L1 Pass", "PS Pass", "Accepted", "L1 seed"))
+    print('-' * 158)
     for rr in results:
-        print('|{:>40} |{:>40} |{:>15} |{:>15} |{:>10} |{:>10} |'.format(rr["path"], rr["l1_prerequisite"], rr["rate"], rr["l1_pass"], rr["ps_pass"], rr["accepted"]))
-    print('-' * (130+13))
+        print('|{:>45} |{:>15} |{:>15} |{:>10} |{:>10} |{:>50} |'.format(u.mystr(rr["path"]), u.mystr(rr["rate"]), u.mystr(rr["l1_pass"]), u.mystr(rr["ps_pass"]), u.mystr(rr["accepted"]), u.mystr(rr["l1_prerequisite"])))
+    print('-' * 158)
     print()    
