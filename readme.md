@@ -10,12 +10,12 @@ cd omstools/
     ```
     pip3 install -r requirements.txt # private pc
     ```
-    - On lxplus
+    - On lxplus8
     ```
     git clone ssh://git@gitlab.cern.ch:7999/cmsoms/oms-api-client.git
     cd oms-api-client
     python3 setup.py install --user
-
+    python3.8 setup.py bdist_rpm --python /usr/bin/python3.8 --build-requires python38,python38-setuptools --release 0.el8
     ```
 
 * Add secret info (ask me) in `env.py`
