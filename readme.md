@@ -20,25 +20,40 @@ pip3 install -r requirements.txt
 options:
   -h, --help            show this help message and exit
   --lumiranges LUMIRANGES
-                        e.g. 373664:25:30,373710 => <run>(:<minLS>:<maxLS>)
+                        <run>(:<minLS>:<maxLS>) e.g. 373664:25:30,373710 || (option 2) cert json file
   --pathnames PATHNAMES
                         e.g. HLT_ZeroBias_v8,HLT_PPRefL1SingleMu7_v1
   --outcsv OUTCSV       Optional csv output file
 ```
-- Example
+- Example 1
 ```
 python3 hltcount.py --lumiranges 373710:100:150 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
 ```
-- Screen
+  * Screen
 ```
 Write to output file: outcsv/hltcount.csv
-Summing up lumi sections: {'373710': {'min': 100, 'max': 150}}
+Summing up lumi sections: {'373710': [[100, 150]]}
 ------------------------------------------------------------
 |                                HLT Path |          Count |
 ------------------------------------------------------------
 |                         HLT_ZeroBias_v8 |          23688 |
 |                 HLT_PPRefGEDPhoton40_v1 |           3075 |
 |                      HLT_AK4PFJet100_v1 |           5764 |
+------------------------------------------------------------
+```
+
+- Example 2
+```
+python3 hltcount.py --lumiranges Cert_Collisions2022HISpecial_362293_362323_Golden.json --pathnames HLT_HIMinimumBias_v2
+```
+  * Screen
+```
+Write to output file: outcsv/hltcount.csv
+Summing up lumi sections: {'362294': [[1, 53]], '362296': [[1, 59]], '362297': [[1, 199]], '362315': [[46, 96]], '362316': [[1, 18]], '362317': [[1, 11]], '362318': [[1, 58]], '362319': [[1, 24], [30, 50], [60, 66]], '362320': [[1, 193]], '362321': [[1, 356]], '362322': [[1, 31]], '362323': [[1, 416], [447, 590]]}
+------------------------------------------------------------
+|                                HLT Path |          Count |
+------------------------------------------------------------
+|                    HLT_HIMinimumBias_v2 |       34031546 |
 ------------------------------------------------------------
 ```
 
