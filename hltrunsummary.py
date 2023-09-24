@@ -19,7 +19,6 @@ if __name__ == "__main__":
     hltconfig = o.get_hltconfig_info(rundetails["attributes"]["hlt_key"])
     if not hltconfig: sys.exit()
 
-    print()
     if args.pathnames is None: sys.exit()
 
     pathsStr = args.pathnames.split(",")
@@ -28,13 +27,7 @@ if __name__ == "__main__":
     q.paginate(per_page = 1000)
     q.set_verbose(False)
 
-    outputfile = 'outcsv/hltrunsummary.csv'
-    if args.outcsv != None:
-        outputfile = args.outcsv
-    u.mkdir(outputfile)
-    print("Write to output file: " + outputfile)
-
-    print()
+    outputfile = u.setoutput(args.outcsv, 'outcsv/hltrunsummary.csv')
     results = []
     with open(outputfile, 'w') as f:
         print("HLT Path, L1 seed, Rate (Hz), L1 Pass, PS Pass, Accepted", file = f)

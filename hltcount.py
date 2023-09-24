@@ -6,7 +6,7 @@ import util.utility as u
 
 def getcount(runlumijson, path, omsapi = omsapi):
     q = omsapi.query("hltpathrates")
-    q.paginate(per_page = 1000)
+    q.paginate(per_page = 3000)
     q.set_verbose(False)
     totalcount = 0
     for run in runlumijson:
@@ -39,11 +39,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     pathsStr = args.pathnames.split(",")
-    outputfile = 'outcsv/hltcount.csv'
-    if args.outcsv != None:
-        outputfile = args.outcsv
-    u.mkdir(outputfile)
-    print("Write to output file: " + outputfile)
+    outputfile = u.setoutput(args.outcsv, "outcsv/hltcount.csv")
 
     lumiRangesStr = args.lumiranges.split(",")
     runlumi = {}
@@ -73,8 +69,10 @@ if __name__ == "__main__":
             if (thismax > runlumi[lumistr[0]]["max"] and runlumi[lumistr[0]]["max"] >= 0) or thismax < 0:
                 runlumi[lumistr[0]]["max"] = thismax
 
-    print("Processing lumi sections: ", end="")
-    print(runlumi)
+    print("Summing up lumi sections: \033[4;32;1m", end = "")
+    print(runlumi, end = "")
+    print("\033[0m")
+    
     counts = {}
     with open(outputfile, 'w') as f:
         print("HLT Path, Counts", file = f)
@@ -83,6 +81,8 @@ if __name__ == "__main__":
             print(p + ", " + f'{totalcount}', file = f)
             counts[p] = totalcount
 
+    print('-' * 60)
+    print('|{:>40} |{:>15} |'.format("HLT Path", "Count"))
     for p in counts:
         print('-' * 60)
         print('|{:>40} |{:>15} |'.format(p, counts[p]))
