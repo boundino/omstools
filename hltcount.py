@@ -83,8 +83,8 @@ if __name__ == "__main__":
 
     print('-' * 60)
     print('|{:>40} |{:>15} |'.format("HLT Path", "Count"))
+    print('-' * 60)
     for p in counts:
-        print('-' * 60)
         print('|{:>40} |{:>15} |'.format(p, counts[p]))
     print('-' * 60)
     print()

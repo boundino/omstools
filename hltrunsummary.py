@@ -53,8 +53,8 @@ if __name__ == "__main__":
 
     print('-' * (130+13))
     print('|{:>40} |{:>40} |{:>15} |{:>15} |{:>10} |{:>10} |'.format("HLT Path", "L1 seed", "Rate (Hz)", "L1 Pass", "PS Pass", "Accepted"))
+    print('-' * (130+13))
     for rr in results:
-        print('-' * (130+13))
         print('|{:>40} |{:>40} |{:>15} |{:>15} |{:>10} |{:>10} |'.format(rr["path"], rr["l1_prerequisite"], rr["rate"], rr["l1_pass"], rr["ps_pass"], rr["accepted"]))
     print('-' * (130+13))
     print()    
