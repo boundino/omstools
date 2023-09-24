@@ -4,18 +4,34 @@
 ```
 git clone git@github.com:boundino/omstools.git
 cd omstools/
-pip3 install -r requirements.txt # Not working on lxplus now (permission denied)
 ```
-- Add secret info in `.env`
+* Add requirements
+    - On private computer
+    ```
+    pip3 install -r requirements.txt # private pc
+    ```
+    - On lxplus
+    ```
+    git clone ssh://git@gitlab.cern.ch:7999/cmsoms/oms-api-client.git
+    cd oms-api-client
+    python3 setup.py install --user
+
+    ```
+
+* Add secret info (ask me) in `env.py`
+```
+CLIENT_ID = 'example_id'
+CLIENT_SECRET = 'example_secret'
+```
 
 ## Usage
-- Quick test
+* Quick test
 ```
 . examples/test.sh
 ```
 
 ### `hltcount.py`
-- Print HLT counts in given lumi ranges of runs
+* Print HLT counts in given lumi ranges of runs
 ```
 options:
   -h, --help            show this help message and exit
@@ -25,11 +41,11 @@ options:
                         e.g. HLT_ZeroBias_v8,HLT_PPRefL1SingleMu7_v1
   --outcsv OUTCSV       Optional csv output file
 ```
-- Example 1
+* Example 1
 ```
 python3 hltcount.py --lumiranges 373710:100:150 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
 ```
-  * Screen
+    - Screen
 ```
 Write to output file: outcsv/hltcount.csv
 Summing up lumi sections: {'373710': [[100, 150]]}
@@ -42,11 +58,11 @@ Summing up lumi sections: {'373710': [[100, 150]]}
 ------------------------------------------------------------
 ```
 
-- Example 2
+* Example 2
 ```
 python3 hltcount.py --lumiranges Cert_Collisions2022HISpecial_362293_362323_Golden.json --pathnames HLT_HIMinimumBias_v2
 ```
-  * Screen
+    - Screen
 ```
 Write to output file: outcsv/hltcount.csv
 Summing up lumi sections: {'362294': [[1, 53]], '362296': [[1, 59]], '362297': [[1, 199]], '362315': [[46, 96]], '362316': [[1, 18]], '362317': [[1, 11]], '362318': [[1, 58]], '362319': [[1, 24], [30, 50], [60, 66]], '362320': [[1, 193]], '362321': [[1, 356]], '362322': [[1, 31]], '362323': [[1, 416], [447, 590]]}
@@ -58,7 +74,7 @@ Summing up lumi sections: {'362294': [[1, 53]], '362296': [[1, 59]], '362297': [
 ```
 
 ### `hltrunsummary.py`
-- Print HLT summary of a given run
+* Print HLT summary of a given run
 ```
 options:
   -h, --help            show this help message and exit
@@ -67,11 +83,11 @@ options:
                         Optional HLT paths
   --outcsv OUTCSV       Optional csv output file
 ```
-- Example
+* Example
 ```
 python3 hltrunsummary.py --run 373710 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
 ```
-- Screen
+    - Screen
 ```
 Run summary: [373710] (PROTON - PROTON)
     Stable: Yes
