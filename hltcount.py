@@ -75,11 +75,16 @@ if __name__ == "__main__":
 
     print("Processing lumi sections: ", end="")
     print(runlumi)
-    print()
+    counts = {}
     with open(outputfile, 'w') as f:
         print("HLT Path, Counts", file = f)
         for p in pathsStr:
             totalcount = getcount(runlumi, p)
             print(p + ", " + f'{totalcount}', file = f)
-            print('{:>30} {:>10}'.format(p, totalcount))
+            counts[p] = totalcount
+
+    for p in counts:
+        print('-' * 60)
+        print('|{:>40} |{:>15} |'.format(p, counts[p]))
+    print('-' * 60)
     print()
