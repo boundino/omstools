@@ -1,2 +1,3 @@
-omsapi
 python-dotenv
+-i https://gitlab.cern.ch/api/v4/projects/45046/packages/pypi/simple
+omsapi
