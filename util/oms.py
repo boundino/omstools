@@ -1,6 +1,8 @@
 from omsapi import OMSAPI
 import os
+import sys
 import env
+import util.utility as u
 
 my_app_id = env.CLIENT_ID
 my_app_secret = env.CLIENT_SECRET
@@ -49,23 +51,43 @@ def print_run(data):
             print("    "+att["desc"]+": \033[4m" + str(attr[att["key"]]) + "\033[0m")
         else:
             print("    "+att["desc"]+": \033[4mNone\033[0m")
+
+    delivered_lumi_unit = u.transfer_to_nb(data["meta"]["row"]["delivered_lumi"]["units"])
+    recorded_lumi_unit = u.transfer_to_nb(data["meta"]["row"]["recorded_lumi"]["units"])
+    
     print("    HLT physics throughput: \033[4m" + str(round(attr["hlt_physics_throughput"], 2)) + "\033[0m GB/s")
     print("    L1 rate: \033[4m" + str(attr["l1_rate"]) + "\033[0m Hz")
-    print("    Lumi (recorded / delivered): \033[4m" + str(round(attr["recorded_lumi"]*1.e3, 2)) + "\033[0m / \033[4m" + str(round(attr["delivered_lumi"]*1.e3, 2)) + "\033[0m nb-1")
+    print("    Lumi (recorded / delivered): \033[4m" + str(round(attr["recorded_lumi"]*recorded_lumi_unit, 2)) + "\033[0m / \033[4m" + str(round(attr["delivered_lumi"]*delivered_lumi_unit, 2)) + "\033[0m nb-1")
 
 def print_run_line(data):
     attr = data["attributes"]
 
     if attr["stable_beam"]:
-        print('|{:>7} | \033[32;1m{:>6}\033[0m '.format(data["id"], "Yes"), end = "")
+        print('|{:>7} | \033[32;7m{:>5} \033[0m '.format(data["id"], "Yes"), end = "")
     else:
-        print('|{:>7} | \033[31;1m{:>6}\033[0m '.format(data["id"], "No"), end = "")
-         
-    print('|{:>5} |{:>20} |{:>20} |{:>16} |{:>17} |{:>10} |{:>11} |{:>45} |'.format(attr["fill_number"],
-                                                                                attr["start_time"].replace("T", " ").replace("Z", ""), attr["end_time"].replace("T", " ").replace("Z", ""),
-                                                                                round(attr["recorded_lumi"]*1.e3, 2), round(attr["delivered_lumi"]*1.e3, 2),
-                                                                                attr["l1_rate"], round(attr["hlt_physics_throughput"], 2),
-                                                                                attr["hlt_key"]))
+        print('|{:>7} | \033[31;7m{:>5} \033[0m '.format(data["id"], "No"), end = "")
+
+    delivered_lumi_unit = u.transfer_to_nb(data["meta"]["row"]["delivered_lumi"]["units"])
+    recorded_lumi_unit = u.transfer_to_nb(data["meta"]["row"]["recorded_lumi"]["units"])
+    
+    print('|{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format(attr["fill_number"],
+                                                                                 attr["start_time"].replace("T", " ").replace("Z", ""), attr["end_time"].replace("T", " ").replace("Z", ""),
+                                                                                 round(attr["recorded_lumi"]*recorded_lumi_unit, 2), round(attr["delivered_lumi"]*delivered_lumi_unit, 2),
+                                                                                 round(attr["l1_rate"], 1), round(attr["hlt_physics_throughput"], 2),
+                                                                                 attr["hlt_key"]))
+
+def print_run_title(onlyline = False):
+    if not onlyline:
+        print('-' * 156)
+        print('|{:>7} | {:>6} |{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format("", "", "",
+                                                                                                    "", "",
+                                                                                                    "Record", "Deliver",
+                                                                                                    "L1 rate", "HLT", ""))
+        print('|{:>7} | {:>6} |{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format("Run", "Stable", "Fill",
+                                                                                                    "Start time", "End time",
+                                                                                                    "(nb-1)", "(nb-1)",
+                                                                                                    "(Hz)", "(GB/s)", "HLT menu")) 
+    print('-' * 156)
     
 def get_lumis_by_run(run, omsapi = omsapi):
     q = omsapi.query("lumisections")
@@ -77,6 +99,28 @@ def get_lumis_by_run(run, omsapi = omsapi):
         print("\033[31merror: run number: \"\033[4m" + run + "\033[0m\033[31m\", skip it..\033[0m")
         return None
     return data
+
+def get_json_by_lumi(data):
+   lumijson = {}
+   for ls in data:
+       thisrun = ls["attributes"]["run_number"]
+       thisls = ls["attributes"]["lumisection_number"]
+       if thisrun not in ls:
+           newele = [thisls, thisls]
+           runlumi[thisrun] = []
+           runlumi[thisrun].append(newele)
+       else:
+           treat = 0
+           for ls in runlumi[thisrun]:
+               if thismin <= ls[0]:
+                   ls[0] = thismin
+                   treat = 1
+               if thismax >= ls[1]:
+                   ls[1] = thismax
+                   treat = 1
+           if treat == 0:
+               newele = [thismin, thismax]
+               runlumi[thisrun].append(newele)
 
 def get_hltconfig_info(key, omsapi = omsapi):
     q = omsapi.query("hltconfigdata")
@@ -97,9 +141,31 @@ def print_lumi_info(d):
     else:
         print('\033[31;1m{:>9}\033[0m'.format("No"), end = "")
 
-    print('{:>23} {:>23} {:>10} {:>10}'.format(attr["start_time"].replace("T", " ").replace("Z", ""),
+    delivered_lumi_unit = u.transfer_to_nb(d["meta"]["row"]["delivered_lumi"]["units"])
+    recorded_lumi_unit = u.transfer_to_nb(d["meta"]["row"]["recorded_lumi"]["units"])
+        
+    print('{:>18} {:>18} {:>10} {:>10}'.format(attr["start_time"].replace("T", " ").replace("Z", ""),
                                   attr["end_time"].replace("T", " ").replace("Z", ""),
-                                  round(attr["delivered_lumi"]*1.e3, 3),
-                                  round(attr["recorded_lumi"]*1.e3, 3)
+                                  round(attr["delivered_lumi"]*delivered_lumi_unit, 3),
+                                  round(attr["recorded_lumi"]*recorded_lumi_unit, 3)
                                   ))
 
+def get_runs_by_time(start_time, end_time):
+    q = omsapi.query("runs")
+    q.set_verbose(False)
+    q.filter("start_time", start_time, "GE").filter("end_time", end_time, "LE")
+    datas = []
+    ipage = 1
+    while True:
+        # print("page: " + str(ipage))
+        q.paginate(page = ipage, per_page = 100)
+        qjson = q.data().json()
+        data = qjson["data"]
+        if not data:
+            print("\033[31merror: no interesting runs: \"\033[4m" + start_time + ", " + end_time + "\033[0m\033[31m\", give up..\033[0m")
+            sys.exit()
+        datas.extend(data)
+        if qjson["links"]["next"] is None:
+            break;
+        ipage = ipage+1
+    return datas
