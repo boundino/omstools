@@ -4,7 +4,7 @@
 ```
 git clone git@github.com:boundino/omstools.git
 cd omstools/
-pip3 install -r requirements.txt
+pip3 install -r requirements.txt # Not working on lxplus now (permission denied)
 ```
 - Add secret info in `.env`
 
