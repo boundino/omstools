@@ -146,7 +146,9 @@ def print_lumi_info(d, tounit = "mub"):
 def get_runs_by_time(start_time, end_time, category = "runs"):
     q = omsapi.query(category)
     q.set_verbose(False)
-    q.filter("start_time", start_time, "GE").filter("end_time", end_time, "LE")
+    q.filter("start_time", start_time, "GE")
+    if end_time is not None:
+        q.filter("end_time", end_time, "LE")
     datas = []
     ipage = 1
     while True:
@@ -162,6 +164,29 @@ def get_runs_by_time(start_time, end_time, category = "runs"):
             break;
         ipage = ipage+1
     return datas
+
+def get_by_range(var, lmin, lmax, category):
+    q = omsapi.query(category)
+    q.set_verbose(False)
+    if lmin is not None:
+        q.filter(var, lmin, "GE")
+    if lmax is not None:
+        q.filter(var, lmax, "LE")
+    datas = []
+    ipage = 1
+    while True:
+        q.paginate(page = ipage, per_page = 100)
+        qjson = q.data().json()
+        data = qjson["data"]
+        if not data:
+            print("\033[31merror: no interesting " + category + " during: \"\033[4m" + lmin + ", " + lmax + "\033[0m\033[31m\", give up..\033[0m")
+            sys.exit()
+        datas.extend(data)
+        if qjson["links"]["next"] is None:
+            break;
+        ipage = ipage+1
+    return datas
+    
 
 def get_rate_by_runls(run, ls = None, category = "hlt"):
     if "hlt" in category:

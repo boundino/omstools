@@ -14,7 +14,7 @@ def getcount(runlumijson, path, omsapi = o.omsapi):
         q.clear_filter()
         q.filter("path_name", path).filter("run_number", run)
         if not q.data().json()["data"]:
-            print("\033[31mwarning: bad path name or run number: \"\033[4m" + path + ", " + str(run) + "\033[0m\033[31m\", skip it..\033[0m")
+            print("\033[31mwarning: bad path name or run number: \"\033[4m" + path + ", " + run + "\033[0m\033[31m\", skip it..\033[0m")
             continue
 
         for ls in runlumijson[run]:
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group(required = True)
     group.add_argument('--lumiranges', help = '(option 1) <run>(:<minLS>:<maxLS>) e.g. 373664:25:30,373710 || (option 2) cert json file')
     group.add_argument('--timerange', help = '(option 3) <start_time>,<end_time>')
-    parser.add_argument('--pathnames', required = True, help = 'e.g. HLT_ZeroBias_v8,HLT_PPRefL1SingleMu7_v1')
+    parser.add_argument('--pathnames', required = True, help = 'List of HLT paths, (option 1) HLT_1,HLT_2,HLT_3 (option 2) .txt file with each line as an HLT path')
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
     args = parser.parse_args()
 
@@ -93,17 +93,20 @@ if __name__ == "__main__":
     print(runlumi, end = "")
     print("\033[0m")
 
-    pathsStr = []
+    pathnames = []
     if args.pathnames:
-        pathsStr = args.pathnames.split(",")
+        pathnames = args.pathnames.split(",")
+        if len(pathnames) == 1 and pathnames[0].endswith(".txt"):
+            text_file = open(pathnames[0], "r")
+            pathnames = text_file.read().splitlines()
     elif list(runlumi.keys()):
-        pathsStr = o.get_hltlist_by_run(list(runlumi.keys())[0])
+        pathnames = o.get_hltlist_by_run(list(runlumi.keys())[0])
     
     counts = {}
     maxlen = 0
     with open(outputfile, 'w') as f:
         print("HLT Path, Counts", file = f)
-        for p in pathsStr:
+        for p in pathnames:
             totalcount = getcount(runlumi, p)
             print(p + ", " + f'{totalcount}', file = f)
             counts[p] = totalcount
