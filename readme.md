@@ -1,5 +1,12 @@
 # Trigger rates and counts from OMS
 
+* [Install](#install)
+* [Usage](#usage)
+    - [hltcount.py](#hltcountpy): HLT counts in given lumi section ranges of time range
+    - [hltrunsummary.py](#hltrunsummarypy): HLT summary of a give run
+    - [l1runsummary.py](#l1runsummarypy): L1 summary of a give run
+    - [listruns.py](#listrunspy): Run list of a given time range
+
 ## Install
 ```
 git clone git@github.com:boundino/omstools.git
