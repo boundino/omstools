@@ -50,7 +50,7 @@ def merge_json_array(source):
     result.append([thismin, thismax])
     return result
 
-def mystr(item):
+def mystr(item, fill = "null"):
     if item:
         return str(item)
-    return "null"
+    return str(fill)

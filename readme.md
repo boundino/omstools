@@ -139,6 +139,40 @@ options:
     --------------------------------------------------------------------------------------------------------------------------------------------------------------
     ```
 
+### `l1runsummary.py`
+* Print L1 trigger summary of a given run
+```
+usage: l1runsummary.py [-h] --run RUN [--outcsv OUTCSV] [--compress]
+
+options:
+  -h, --help       show this help message and exit
+  --run RUN        one run number
+  --outcsv OUTCSV  Optional csv output file
+  --compress       Optional filter turned-on bits
+```
+* Example
+    - Command
+    ```
+    python3 l1runsummary.py --run 373710 --compress
+    ```
+    - Screen
+    ```
+    Write to output file: outcsv/l1runsummary.csv
+    ------------------------------------------------------------------------------------------------------------------------------
+    |      |                                                             |  Pre-DT [Hz] | Pre-DT [Hz] |   Post-DT | Post-DT [Hz] |
+    |  Bit |                                                        Name |    before PS |    after PS |      [Hz] |     from HLT |
+    ------------------------------------------------------------------------------------------------------------------------------
+    |    1 |                                                 L1_ZeroBias |    447587.16 |    19901.61 |  19731.54 |     19712.18 |
+    |   18 |                                                L1_NotBptxOR |  38554582.75 |       49.89 |     48.73 |        48.72 |
+    |   26 |                                    L1_FirstCollisionInOrbit |     11189.68 |        9.96 |      9.88 |         9.87 |
+    ......
+    |  320 |                                       L1_SingleJet35_FWD2p5 |        75.67 |       75.67 |     74.64 |        74.57 |
+    |  321 |                                       L1_SingleJet60_FWD2p5 |         4.72 |        4.72 |      4.65 |         4.64 |
+    |  322 |                                       L1_SingleJet90_FWD2p5 |         0.63 |        0.63 |      0.62 |         0.62 |
+    |  323 |                                      L1_SingleJet120_FWD2p5 |         0.12 |        0.12 |      0.12 |         0.12 |
+    ------------------------------------------------------------------------------------------------------------------------------~
+    ```
+
 ### `listruns.py`
 * Print runs of interest in a given time range
 ```

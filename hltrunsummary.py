@@ -30,8 +30,8 @@ if __name__ == "__main__":
         print("HLT Path, L1 seed, Rate (Hz), L1 Pass, PS Pass, Accepted", file = f)
         for d in data:
             attr = d["attributes"]
-            if "HLT_" not in attr["path_name"]:
-                continue
+            # if "HLT_" not in attr["path_name"]:
+            #     continue
             config = o.get_item_data(hltconfig, "path_name", attr["path_name"])
             ele = { "path" : attr["path_name"],
                     "l1_prerequisite" : config["attributes"]["l1_prerequisite"],
