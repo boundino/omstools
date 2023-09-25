@@ -28,6 +28,7 @@ if __name__ == "__main__":
 
     outputfile = u.setoutput(args.outcsv, 'outcsv/l1runsummary.csv')
     results = []
+    maxlen = 0
     with open(outputfile, 'w') as f:
         print("L1 bit, Name, Pre-DT before PS (Hz), Pre-DT after PS (Hz), Post-DT (Hz), Post-DT from HLT (Hz)", file = f)
         for d in data:
@@ -39,22 +40,25 @@ if __name__ == "__main__":
                     "post_dt_rate" : attr["post_dt_rate"],
                     "post_dt_hlt_rate" : attr["post_dt_hlt_rate"],
                    }
+            if len(ele["name"]) > maxlen: maxlen = len(ele["name"])
             for e in ele:
                 print(u.mystr(ele[e], 0) + ", ", end = "", file = f)
             print("", file = f)
             results.append(ele)
 
-    print('-' * 126)
-    print('|{:>5} |{:>60} |{:>13} |{:>12} |{:>10} |{:>13} |'.format("", "", "Pre-DT [Hz]", "Pre-DT [Hz]", "Post-DT", "Post-DT [Hz]"))
-    print('|{:>5} |{:>60} |{:>13} |{:>12} |{:>10} |{:>13} |'.format("Bit", "Name", "before PS", "after PS", "[Hz]", "from HLT"))
-    print('-' * 126)
+    nl = 67 + maxlen
+    print('-' * nl)
+    print('| {:>4} | {:<{width}} |{:>13} |{:>12} |{:>10} |{:>13} |'.format("", "", "Pre-DT [Hz]", "Pre-DT [Hz]", "Post-DT", "Post-DT [Hz]", width = maxlen))
+    print('| {:>4} | {:<{width}} |{:>13} |{:>12} |{:>10} |{:>13} |'.format("Bit", "Name", "before PS", "after PS", "[Hz]", "from HLT", width = maxlen))
+    print('-' * nl)
     for rr in results:
         if args.compress and not rr["pre_dt_rate"]:
             continue
-        print('|{:>5} |{:>60} |{:>13} |{:>12} |{:>10} |{:>13} |'.format(u.mystr(rr["bit"]), u.mystr(rr["name"]),
-                                                                        u.mystr(round(rr["pre_dt_before_prescale_rate"], 2), 0),
-                                                                        u.mystr(round(rr["pre_dt_rate"], 2), 0),
-                                                                        u.mystr(round(rr["post_dt_rate"], 2), 0),
-                                                                        u.mystr(round(rr["post_dt_hlt_rate"], 2), 0)));
-    print('-' * 126)
+        print('| {:>4} | {:<{width}} |{:>13} |{:>12} |{:>10} |{:>13} |'.format(u.mystr(rr["bit"]), u.mystr(rr["name"]),
+                                                                              u.mystr(round(rr["pre_dt_before_prescale_rate"], 2), 0),
+                                                                              u.mystr(round(rr["pre_dt_rate"], 2), 0),
+                                                                              u.mystr(round(rr["post_dt_rate"], 2), 0),
+                                                                              u.mystr(round(rr["post_dt_hlt_rate"], 2), 0),
+                                                                              width = maxlen));
+    print('-' * nl)
     print()    

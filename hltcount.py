@@ -100,17 +100,20 @@ if __name__ == "__main__":
         pathsStr = o.get_hltlist_by_run(list(runlumi.keys())[0])
     
     counts = {}
+    maxlen = 0
     with open(outputfile, 'w') as f:
         print("HLT Path, Counts", file = f)
         for p in pathsStr:
             totalcount = getcount(runlumi, p)
             print(p + ", " + f'{totalcount}', file = f)
             counts[p] = totalcount
+            if len(p) > maxlen: maxlen = len(p)
 
-    print('-' * 60)
-    print('|{:>40} |{:>15} |'.format("HLT Path", "Count"))
-    print('-' * 60)
+    nl = 21 + maxlen
+    print('-' * nl)
+    print('| {:<{width}} |{:>15} |'.format("HLT Path", "Count", width = maxlen))
+    print('-' * nl)
     for p in counts:
-        print('|{:>40} |{:>15} |'.format(p, counts[p]))
-    print('-' * 60)
+        print('| {:<{width}} |{:>15} |'.format(p, counts[p], width = maxlen))
+    print('-' * nl)
     print()

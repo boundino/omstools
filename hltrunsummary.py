@@ -26,6 +26,7 @@ if __name__ == "__main__":
 
     outputfile = u.setoutput(args.outcsv, 'outcsv/hltrunsummary.csv')
     results = []
+    maxlen = 0
     with open(outputfile, 'w') as f:
         print("HLT Path, L1 seed, Rate (Hz), L1 Pass, PS Pass, Accepted", file = f)
         for d in data:
@@ -40,15 +41,17 @@ if __name__ == "__main__":
                     "ps_pass" : str(attr["ps_pass"]),
                     "accepted" : str(attr["accepted"]),
                    }
+            if len(ele["path"]) > maxlen: maxlen = len(ele["path"])
             for e in ele:
                 print(u.mystr(ele[e]) + ", ", end = "", file = f)
             print("", file = f)
             results.append(ele)
 
-    print('-' * 158)
-    print('|{:>45} |{:>15} |{:>15} |{:>10} |{:>10} |{:>50} |'.format("HLT Path", "Rate (Hz)", "L1 Pass", "PS Pass", "Accepted", "L1 seed"))
-    print('-' * 158)
+    nl = 115 + maxlen
+    print('-' * nl)
+    print('| {:<{width}} |{:>15} |{:>15} |{:>10} |{:>10} | {:<50} |'.format("HLT Path", "Rate (Hz)", "L1 Pass", "PS Pass", "Accepted", "L1 seed", width = maxlen))
+    print('-' * nl)
     for rr in results:
-        print('|{:>45} |{:>15} |{:>15} |{:>10} |{:>10} |{:>50} |'.format(u.mystr(rr["path"]), u.mystr(rr["rate"]), u.mystr(rr["l1_pass"]), u.mystr(rr["ps_pass"]), u.mystr(rr["accepted"]), u.mystr(rr["l1_prerequisite"])))
-    print('-' * 158)
+        print('| {:<{width}} |{:>15} |{:>15} |{:>10} |{:>10} | {:<50} |'.format(u.mystr(rr["path"]), u.mystr(rr["rate"]), u.mystr(rr["l1_pass"]), u.mystr(rr["ps_pass"]), u.mystr(rr["accepted"]), u.mystr(rr["l1_prerequisite"]), width = maxlen))
+    print('-' * nl)
     print()    

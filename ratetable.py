@@ -42,8 +42,10 @@ if __name__ == "__main__":
         
 
     rate_results={};
+    maxlen = 0
     for p in pathnames:
         rate_results[p] = {}
+        if len(p) > maxlen: maxlen = len(p)
         
     for run in runs:
         rls = run.split(":")
@@ -84,16 +86,16 @@ if __name__ == "__main__":
                 print(", " + u.mystr(rate_results[p][run], 0), file = f, end = "")
             print(file = f)
 
-    nl = 52+14*len(runs)+1
+    nl = 4 + 14*len(runs) + maxlen
     if key_var == "rate": print(" "*(nl-4) + "[Hz]")
     print('-' * nl)
-    print('|{:>50} '.format("Path / L1 seed (" + key_l1 + ")"), end = "")
+    print('| {:<{width}} '.format("Path / L1 seed (" + key_l1 + ")", width = maxlen), end = "")
     for run in runs:
         print('|{:>12} '.format(run), end = "")
     print("|")
     print('-' * nl)
     for p in pathnames:
-        print('|{:>50} '.format(p), end = "")
+        print('| {:<{width}} '.format(p, width = maxlen), end = "")
         for run in runs:
             print('|{:>12} '.format(round(rate_results[p][run], rd)), end = "")
         print("|")
