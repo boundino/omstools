@@ -70,7 +70,7 @@ def print_run_line(data, tounit = "mub"):
     delivered_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["delivered_lumi"]["units"], tounit)
     recorded_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["recorded_lumi"]["units"], tounit)
     
-    print('|{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format(attr["fill_number"],
+    print('|{:>5} |{:>20} |{:>20} |{:>10} |{:>10} |{:>10} |{:>8} | {:<42} |'.format(attr["fill_number"],
                                                                                  attr["start_time"].replace("T", " ").replace("Z", ""), attr["end_time"].replace("T", " ").replace("Z", ""),
                                                                                  round(attr["recorded_lumi"]*recorded_lumi_unit, 2), round(attr["delivered_lumi"]*delivered_lumi_unit, 2),
                                                                                  round(attr["l1_rate"], 1), round(attr["hlt_physics_throughput"], 2),
@@ -78,16 +78,16 @@ def print_run_line(data, tounit = "mub"):
 
 def print_run_title(onlyline = False, unit = "mub"):
     if not onlyline:
-        print('-' * 156)
-        print('|{:>7} | {:>6} |{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format("", "", "",
-                                                                                                    "", "",
-                                                                                                    "Record", "Deliver",
-                                                                                                    "L1 rate", "HLT", ""))
-        print('|{:>7} | {:>6} |{:>5} |{:>20} |{:>20} |{:>8} |{:>8} |{:>10} |{:>8} |{:>42} |'.format("Run", "Stable", "Fill",
-                                                                                                    "Start time", "End time",
-                                                                                                    "("+unit+"-1)", "("+unit+"-1)",
-                                                                                                    "(Hz)", "(GB/s)", "HLT menu")) 
-    print('-' * 156)
+        print('-' * 161)
+        print('|{:>7} | {:>6} |{:>5} |{:>20} |{:>20} |{:>10} |{:>10} |{:>10} |{:>8} | {:<42} |'.format("", "", "",
+                                                                                                      "", "",
+                                                                                                      "Record", "Deliver",
+                                                                                                      "L1 rate", "HLT", ""))
+        print('|{:>7} | {:>6} |{:>5} |{:>20} |{:>20} |{:>10} |{:>10} |{:>10} |{:>8} | {:<42} |'.format("Run", "Stable", "Fill",
+                                                                                                      "Start time", "End time",
+                                                                                                      "("+unit+"-1)", "("+unit+"-1)",
+                                                                                                      "(Hz)", "(GB/s)", "HLT menu")) 
+    print('-' * 161)
     
 def get_lumis_by_run(run, omsapi = omsapi):
     q = omsapi.query("lumisections")

@@ -34,6 +34,8 @@ if __name__ == "__main__":
             continue
         if "PRef" not in hltkey and "HI" not in hltkey:
             continue
+        if d["attributes"]["delivered_lumi"] <= 0:
+            continue
         if not d["attributes"]["stable_beam"] and args.stable:
             continue
 
