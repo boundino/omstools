@@ -3,6 +3,7 @@
 * [Install](#install)
 * [Usage](#usage)
     - [hltcount.py](#hltcountpy): HLT counts in given lumi section ranges of time range
+    - [ratetable.py](#ratetablepy): HLT/L1 rates/counts comparison between run or lumi sections
     - [hltrunsummary.py](#hltrunsummarypy): HLT summary of a give run
     - [l1runsummary.py](#l1runsummarypy): L1 summary of a give run
     - [listruns.py](#listrunspy): Run list of a given time range
@@ -103,7 +104,47 @@ options:
     |                      HLT_AK4PFJet100_v1 |          83710 |
     ------------------------------------------------------------
     ```
+### `ratetable.py`
+* HLT paths or L1 rates or counts for a given set of runs/lumi sections
+```
+usage: ratetable.py [-h] --runls RUNLS --pathnames PATHNAMES [--l1preps] [--count] [--outcsv OUTCSV]
 
+options:
+  -h, --help            show this help message and exit
+  --runls RUNLS         List of run with optional lumi section, e.g. 373710,373710:740
+  --pathnames PATHNAMES
+                        List of HLT paths or L1 seeds, (option 1) HLT_1,L1_1,L1_2 (option 2) .txt file with each line as an HLT/L1
+  --l1preps             Optional store L1 pre PS rate instead of post DT rate
+  --count               Optional store count instead of rate
+  --outcsv OUTCSV       Optional csv output file
+```
+* Example
+    - Command
+    ```
+    python3 ratetable.py --runls 373664,373710,373710:740 --pathnames examples/l1hlt.txt
+    ```
+    - Screen
+    ```
+    Variable option: rate
+    L1 rate option: Post-DT
+    
+    Write to output file: outcsv/ratetable.csv
+                                                                                               [Hz]
+    -----------------------------------------------------------------------------------------------
+    |                     Path / L1 seed (post_dt_rate) |      373664 |      373710 |  373710:740 |
+    -----------------------------------------------------------------------------------------------
+    |                              HLT_AK4CaloJet100_v1 |       0.046 |       4.758 |       4.676 |
+    |                                HLT_AK4PFJet100_v1 |        0.02 |       4.148 |       3.904 |
+    |            HLT_PPRefDmesonTrackingGlobal_Dpt60_v1 |         0.0 |       0.128 |       0.129 |
+    |                              HLT_PPRefEle50Gsf_v1 |         0.0 |       0.124 |       0.086 |
+    |                           HLT_PPRefGEDPhoton60_v1 |       0.008 |       0.526 |       0.686 |
+    |                              HLT_PPRefZeroBias_v1 |       7.907 |   18515.109 |    19887.81 |
+    |                                   L1_DoubleMuOpen |         0.0 |      90.062 |      90.215 |
+    |                                       L1_ZeroBias |       7.989 |   19731.539 |   19887.299 |
+    |                                    L1_SingleJet60 |       0.856 |      74.919 |      71.726 |
+    -----------------------------------------------------------------------------------------------
+    ```
+    
 ### `hltrunsummary.py`
 * Print HLT summary of a given run
 ```

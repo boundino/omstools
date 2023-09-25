@@ -9,6 +9,8 @@ certjson=examples/Cert_Collisions2022HISpecial_362293_362323_Golden.json
 python3 hltrunsummary.py --run 373710
 python3 l1runsummary.py --run 373710 --compress
 
+python3 ratetable.py --runls 373664,373710,373710:740 --pathnames examples/l1hlt.txt
+
 python3 listruns.py --timemin 2023-09-19T18:00:00 --timemax 2023-09-20 --unit nb
 
 set +x

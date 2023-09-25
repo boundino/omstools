@@ -163,6 +163,36 @@ def get_runs_by_time(start_time, end_time, category = "runs"):
         ipage = ipage+1
     return datas
 
+def get_rate_by_runls(run, ls = None, category = "hlt"):
+    if "hlt" in category:
+        if not ls:
+            q = omsapi.query("hltpathinfo")
+        else:
+            q = omsapi.query("hltpathrates")
+    else:
+        q = omsapi.query("l1algorithmtriggers")
+    q.set_verbose(False)
+    q.set_validation(False)
+    q.filter("run_number", run)
+    if not ls:
+        if "hlt" not in category:
+            q.custom("group[granularity]", "run")
+    else:
+        q.custom("group[granularity]", "lumisection")
+        q.filter("lumisection_number", ls)
+        
+    datas = []
+    ipage = 1
+    while True:
+        q.paginate(page = ipage, per_page = 100)
+        qjson = q.data().json()
+        data = qjson["data"]
+        datas.extend(data)
+        if qjson["links"]["next"] is None:
+            break;
+        ipage = ipage+1
+    return datas
+    
 def get_hltlist_by_run(run):
     q = omsapi.query("hltpathinfo")
     q.set_verbose(False)

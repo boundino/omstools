@@ -1,0 +1,9 @@
+HLT_AK4CaloJet100_v1
+HLT_AK4PFJet100_v1
+HLT_PPRefDmesonTrackingGlobal_Dpt60_v1
+HLT_PPRefEle50Gsf_v1
+HLT_PPRefGEDPhoton60_v1
+HLT_PPRefZeroBias_v1
+L1_DoubleMuOpen
+L1_ZeroBias
+L1_SingleJet60
