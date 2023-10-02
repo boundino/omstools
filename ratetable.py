@@ -89,7 +89,7 @@ if __name__ == "__main__":
     nl = 4 + 14*len(runs) + maxlen
     if key_var == "rate": print(" "*(nl-4) + "[Hz]")
     print('-' * nl)
-    print('| {:<{width}} '.format("Path / L1 seed (" + key_l1 + ")", width = maxlen), end = "")
+    print('| {:<{width}} '.format("Path / L1 seed", width = maxlen), end = "")
     for run in runs:
         print('|{:>12} '.format(run), end = "")
     print("|")

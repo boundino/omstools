@@ -39,25 +39,25 @@ def get_run_info(run, verbose, omsapi = omsapi):
 
 def print_run(data, tounit = "mub"):
     attr = data["attributes"]
-    print("Run summary: [\033[1;4m" + data["id"] + "\033[0m] (\033[1;4m" + attr["fill_type_party1"] + " - " + attr["fill_type_party2"] + "\033[0m)")
+    print("Run summary: [\033[1;4m" + data["id"] + "\033[0m] (\033[1;4m" + u.mystr(attr["fill_type_party1"]) + " - " + u.mystr(attr["fill_type_party2"]) + "\033[0m)")
     print("    Stable: ", end = "")
     if attr["stable_beam"]:
         print("\033[32;1mYes\033[0m")
     else:
         print("\033[31;1mNo\033[0m")
-    print("    Time: " + attr["start_time"].replace("T", " ").replace("Z", "") + " - " + attr["end_time"].replace("T", " ").replace("Z", ""))
+    print("    Time: " + u.mystr(attr["start_time"]).replace("T", " ").replace("Z", "") + " - " + u.mystr(attr["end_time"]).replace("T", " ").replace("Z", ""))
     for att in [{ "key" : "fill_number", "desc" : "Fill"}, {"key" : "l1_menu", "desc" : "L1 menu"}, {"key" : "hlt_key", "desc" : "HLT menu"}]:
         if attr[att["key"]]:
-            print("    "+att["desc"]+": \033[4m" + str(attr[att["key"]]) + "\033[0m")
+            print("    "+att["desc"]+": \033[4m" + u.mystr(attr[att["key"]]) + "\033[0m")
         else:
             print("    "+att["desc"]+": \033[4mNone\033[0m")
 
     delivered_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["delivered_lumi"]["units"], tounit)
     recorded_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["recorded_lumi"]["units"], tounit)
     
-    print("    HLT physics throughput: \033[4m" + str(round(attr["hlt_physics_throughput"], 2)) + "\033[0m GB/s")
-    print("    L1 rate: \033[4m" + str(attr["l1_rate"]) + "\033[0m Hz")
-    print("    Lumi (recorded / delivered): \033[4m" + str(round(attr["recorded_lumi"]*recorded_lumi_unit, 2)) + "\033[0m / \033[4m" + str(round(attr["delivered_lumi"]*delivered_lumi_unit, 2)) + "\033[0m mub-1")
+    print("    HLT physics throughput: \033[4m" + u.mystr(round(attr["hlt_physics_throughput"], 2)) + "\033[0m GB/s")
+    print("    L1 rate: \033[4m" + u.mystr(attr["l1_rate"]) + "\033[0m Hz")
+    print("    Lumi (recorded / delivered): \033[4m" + u.mystr(round(attr["recorded_lumi"]*recorded_lumi_unit, 2)) + "\033[0m / \033[4m" + u.mystr(round(attr["delivered_lumi"]*delivered_lumi_unit, 2)) + "\033[0m mub-1")
 
 def print_run_line(data, tounit = "mub"):
     attr = data["attributes"]
@@ -165,6 +165,7 @@ def get_runs_by_time(start_time, end_time, category = "runs"):
         ipage = ipage+1
     return datas
 
+# may crash when the range is large for filldetails
 def get_by_range(var, lmin, lmax, category):
     q = omsapi.query(category)
     q.set_verbose(False)
@@ -175,7 +176,7 @@ def get_by_range(var, lmin, lmax, category):
     datas = []
     ipage = 1
     while True:
-        q.paginate(page = ipage, per_page = 100)
+        q.paginate(page = ipage, per_page = 10)
         qjson = q.data().json()
         data = qjson["data"]
         if not data:
@@ -185,6 +186,19 @@ def get_by_range(var, lmin, lmax, category):
         if qjson["links"]["next"] is None:
             break;
         ipage = ipage+1
+    return datas
+    
+def get_by_array(var, array, category):
+    q = omsapi.query(category)
+    q.set_verbose(False)
+    datas = []
+    for a in array:
+        q.clear_filter()
+        q.filter(var, a)
+        qjson = q.data().json()
+        data = qjson["data"]
+        datas.extend(data)
+
     return datas
     
 

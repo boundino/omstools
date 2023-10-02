@@ -16,6 +16,8 @@ def translate(datas, keys = [], category = "runs"):
                 continue
             if "PRef" not in hltkey and "HI" not in hltkey:
                 continue
+            if not d["attributes"]["recorded_lumi"]:
+                continue
             if d["attributes"]["recorded_lumi"] <= 0:
                 continue
         r = {}
@@ -49,20 +51,20 @@ if __name__ == "__main__":
                               "last_lumisection_number",
                               "l1_rate",
                               "l1_menu",
-                              "stable_beam"], "runs")
+                              "cmssw_version",
+                              "stable_beam",
+                              "components_out"], "runs")
     
     with open('../cms-hin-coordination/webs/public/run/js/runs.js', 'w') as f:
         print('let runinfo = ', file = f)
         json.dump(r_runs, f, indent = 2)
 
-    fillmin = 10000
-    fillmax = 0
+    fillarray = []
     for r in r_runs:
-        if r_runs[r]["fill_number"] <= fillmin: fillmin = r_runs[r]["fill_number"]
-        if r_runs[r]["fill_number"] >= fillmax: fillmax = r_runs[r]["fill_number"]
+        if r_runs[r]["fill_number"] not in fillarray:
+            fillarray.append(r_runs[r]["fill_number"])
 
-    fills = o.get_by_range("fill_number", fillmin, fillmax, category = "filldetails")
-    # fills = o.get_runs_by_time(start_time, end_time, "filldetails")
+    fills = o.get_by_array("fill_number", fillarray, category = "filldetails")
     r_fills = translate(fills, ["injection_scheme",
                                 "fill_type_party2",
                                 "fill_type_party1",
