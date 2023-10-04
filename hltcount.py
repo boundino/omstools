@@ -54,19 +54,35 @@ if __name__ == "__main__":
                 text_file = open(lumiRangesStr[0], "r")
                 lines = text_file.read().splitlines()
                 lumiRangesStr = lines
+
+            newlumiRangesStr = []
             for str in lumiRangesStr:
                 lumistr = str.split(":")
-                if len(lumistr) != 1 and len(lumistr) != 3:
-                    continue
-                thisrun = lumistr[0]
+                lumiran = str.split("-")
+                if len(lumistr) == 2:
+                    newlumiRangesStr.append(str)
+                if len(lumistr) == 1 and len(lumiran) == 2:
+                    datas = o.get_by_range("run_number", lumiran[0], lumiran[1], "runs")
+                    datas = o.filter_data_list(datas, 'stable_beam', True)
+                    newlumiRangesStr.extend(u.prop_to_list(datas, "id"))
+                elif len(lumistr) == 1:
+                    newlumiRangesStr.append(str)
+
+            for str in newlumiRangesStr:
+                lumistr = str.split(":")
+                lumiran = str.split("-")
+
+                if len(lumistr) == 2:
+                    lumistr.extend([lumistr[1]])
                 if len(lumistr) == 1:
                     lumistr.extend(['-1', '-1'])
+                thisrun = lumistr[0]
                 thismin = int(lumistr[1])
                 thismax = int(lumistr[2])
                 if thismin > thismax: 
                     print("\033[31merror: bad lumi range: \"\033[4m" + str + "\033[0m\033[31m\", skip it..\033[0m")
                     continue
-
+                    
                 if thisrun not in runlumi:
                     runlumi[thisrun] = []
                     runlumi[thisrun].append([thismin, thismax])

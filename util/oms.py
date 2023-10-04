@@ -244,3 +244,16 @@ def get_hltlist_by_run(run):
         hltlist.append(d["attributes"]["path_name"])
 
     return hltlist
+
+def filter_data_list(alist, prop, value):
+    result = []
+    for a in alist:
+        if a["attributes"][prop] == value:
+            result.append(a)
+    return result
+
+def prop_data_to_list(adict, prop):
+    result = []
+    for a in adict:
+        result.append(a["attributes"][prop])
+    return result

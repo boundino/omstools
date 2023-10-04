@@ -46,9 +46,9 @@ usage: hltcount.py [-h] (--lumiranges LUMIRANGES | --timerange TIMERANGE) --path
 options:
   -h, --help            show this help message and exit
   --lumiranges LUMIRANGES
-                        (option 1) <run>(:<minLS>:<maxLS>) e.g. 373664:25:30,373710 || (option 2) cert json file
+                        (option 1) <run>(:<minLS>:<maxLS>) e.g. 373664:25:30,373710 || (option 2) <minrun>-<maxrun> e.g. 374345-374731 || (option 3) cert json file
   --timerange TIMERANGE
-                        (option 3) <start_time>,<end_time>
+                        (option 4) <start_time>,<end_time>
   --pathnames PATHNAMES
                         e.g. HLT_ZeroBias_v8,HLT_PPRefL1SingleMu7_v1
   --outcsv OUTCSV       Optional csv output file

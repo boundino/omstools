@@ -54,3 +54,11 @@ def mystr(item, fill = "null"):
     if item:
         return str(item)
     return str(fill)
+
+def prop_to_list(adict, prop):
+    result = []
+    for a in adict:
+        result.append(a[prop])
+    return result
+
+
