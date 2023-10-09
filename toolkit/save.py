@@ -21,16 +21,24 @@ def save_json(d1, key):
         
 
 if __name__ == "__main__":
-    save_json(get_by_filter("l1algorithmtriggers",
-                            [["run_number", "373710", "EQ"]],
-                            [["group[granularity]", "run"]]), # lumisection
-              "l1algorithmtriggers_run")
+    # save_json(get_by_filter("l1algorithmtriggers",
+    #                         [["run_number", "373710", "EQ"]],
+    #                         [["group[granularity]", "run"]]), # lumisection
+    #           "l1algorithmtriggers_run")
 
-    save_json(get_by_filter("l1algorithmtriggers",
-                            # [["run_number", "373710", "EQ"], ["lumisection_number", 500, "EQ"]],
-                            [["run_number", "373710", "EQ"], ["name", "L1_ZeroBias", "EQ"]],
-                            [["group[granularity]", "lumisection"]]),
-              "l1algorithmtriggers_lumisection")
+    # save_json(get_by_filter("l1algorithmtriggers",
+    #                         # [["run_number", "373710", "EQ"], ["lumisection_number", 500, "EQ"]],
+    #                         [["run_number", "373710", "EQ"], ["name", "L1_ZeroBias", "EQ"]],
+    #                         [["group[granularity]", "lumisection"]]),
+    #           "l1algorithmtriggers_lumisection")
+
+    # save_json(get_by_filter("lumisections",
+    #                         [["run_number", "374288", "EQ"]]),
+    #           "lumisections")
+
+    save_json(get_by_filter("hltpathrates",
+                            [["run_number", "374288", "EQ"], ["first_lumisection_number", 10, "GE"], ["last_lumisection_number", 12, "LE"], ["path_name", "HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v6", "EQ"]]),
+              "hltpathrates")
 
     # save_json(get_by_filter("l1configurationkeys",
     #                         [["run_number", "373710", "EQ"]]),

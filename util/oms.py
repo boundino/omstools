@@ -52,8 +52,12 @@ def print_run(data, tounit = "mub"):
         else:
             print("    "+att["desc"]+": \033[4mNone\033[0m")
 
-    delivered_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["delivered_lumi"]["units"], tounit)
-    recorded_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["recorded_lumi"]["units"], tounit)
+    if not data["meta"]:
+        delivered_lumi_unit = "(null)"
+        recorded_lumi_unit = "(null)"
+    else:
+        delivered_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["delivered_lumi"]["units"], tounit)
+        recorded_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["recorded_lumi"]["units"], tounit)
     
     print("    HLT physics throughput: \033[4m" + u.mystr(round(attr["hlt_physics_throughput"], 2)) + "\033[0m GB/s")
     print("    L1 rate: \033[4m" + u.mystr(attr["l1_rate"]) + "\033[0m Hz")
@@ -89,16 +93,35 @@ def print_run_title(onlyline = False, unit = "mub"):
                                                                                                       "(Hz)", "(GB/s)", "HLT menu")) 
     print('-' * 161)
     
-def get_lumis_by_run(run, omsapi = omsapi):
-    q = omsapi.query("lumisections")
-    q.paginate(per_page = 3000)
+# may crash when the range is large for filldetails
+def get_by_range(var, lmin, lmax, category, var2 = None, per_page = 10):
+    q = omsapi.query(category)
     q.set_verbose(False)
-    q.filter("run_number", run)
-    data = q.data().json()["data"]
-    if not data:
-        print("\033[31merror: run number: \"\033[4m" + run + "\033[0m\033[31m\", skip it..\033[0m")
-        return None
-    return data
+    if var2 is None: var2 = var
+    if lmin is not None:
+        q.filter(var, lmin, "GE")
+    if lmax is not None:
+        q.filter(var2, lmax, "LE")
+    datas = []
+    ipage = 1
+    while True:
+        q.paginate(page = ipage, per_page = per_page)
+        qjson = q.data().json()
+        data = qjson["data"]
+        if not data:
+            print("\033[31merror: no interesting " + category + " during: \"\033[4m" + lmin + ", " + lmax + "\033[0m\033[31m\", give up..\033[0m")
+            sys.exit()
+        datas.extend(data)
+        if qjson["links"]["next"] is None:
+            break;
+        ipage = ipage+1
+    return datas
+    
+def get_runs_by_time(start_time = None, end_time = None):
+    datas = get_by_range(var = "start_time", lmin = start_time, lmax = end_time,
+                         category = "runs", var2 = "end_time",
+                         per_page = 100)
+    return datas
 
 def get_json_by_lumi(data):
     lumijson = {}
@@ -114,6 +137,30 @@ def get_json_by_lumi(data):
         lumijson[run] = lumiranges
 
     return lumijson
+
+def get_ls_by_range(rmin, rmax):
+    rmins = rmin.split(":")
+    run_min = int(rmins[0])
+    ls_min = None
+    if len(rmins) == 2: ls_min = int(rmins[1])
+    rmaxs = rmax.split(":")
+    run_max = int(rmaxs[0])
+    ls_max = None
+    if len(rmaxs) == 2: ls_max = int(rmaxs[1])
+
+    datas = get_by_range("run_number", run_min, run_max, "lumisections", per_page = 100)
+    results = []
+    for d in datas:
+        if d["attributes"]["run_number"] == run_min:
+            if ls_min is not None and d["attributes"]["lumisection_number"] < ls_min:
+                continue
+        if d["attributes"]["run_number"] == run_max:
+            if ls_max is not None and d["attributes"]["lumisection_number"] > ls_max:
+                continue
+        results.append(d)
+    return results
+
+
 
 def get_hltconfig_info(key, omsapi = omsapi):
     q = omsapi.query("hltconfigdata")
@@ -143,51 +190,6 @@ def print_lumi_info(d, tounit = "mub"):
                                   round(attr["recorded_lumi"]*recorded_lumi_unit, 3)
                                   ))
 
-def get_runs_by_time(start_time, end_time, category = "runs"):
-    q = omsapi.query(category)
-    q.set_verbose(False)
-    q.filter("start_time", start_time, "GE")
-    if end_time is not None:
-        q.filter("end_time", end_time, "LE")
-    datas = []
-    ipage = 1
-    while True:
-        # print("page: " + str(ipage))
-        q.paginate(page = ipage, per_page = 100)
-        qjson = q.data().json()
-        data = qjson["data"]
-        if not data:
-            print("\033[31merror: no interesting " + category + " during: \"\033[4m" + start_time + ", " + end_time + "\033[0m\033[31m\", give up..\033[0m")
-            sys.exit()
-        datas.extend(data)
-        if qjson["links"]["next"] is None:
-            break;
-        ipage = ipage+1
-    return datas
-
-# may crash when the range is large for filldetails
-def get_by_range(var, lmin, lmax, category):
-    q = omsapi.query(category)
-    q.set_verbose(False)
-    if lmin is not None:
-        q.filter(var, lmin, "GE")
-    if lmax is not None:
-        q.filter(var, lmax, "LE")
-    datas = []
-    ipage = 1
-    while True:
-        q.paginate(page = ipage, per_page = 10)
-        qjson = q.data().json()
-        data = qjson["data"]
-        if not data:
-            print("\033[31merror: no interesting " + category + " during: \"\033[4m" + lmin + ", " + lmax + "\033[0m\033[31m\", give up..\033[0m")
-            sys.exit()
-        datas.extend(data)
-        if qjson["links"]["next"] is None:
-            break;
-        ipage = ipage+1
-    return datas
-    
 def get_by_array(var, array, category):
     q = omsapi.query(category)
     q.set_verbose(False)
@@ -201,7 +203,6 @@ def get_by_array(var, array, category):
 
     return datas
     
-
 def get_rate_by_runls(run, ls = None, category = "hlt"):
     if "hlt" in category:
         if not ls:

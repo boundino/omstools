@@ -1,4 +1,6 @@
 import os
+import copy
+import json
 
 def mkdir(outputfile):
     dirname = os.path.dirname(outputfile)
@@ -50,10 +52,33 @@ def merge_json_array(source):
     result.append([thismin, thismax])
     return result
 
-def mystr(item, fill = "null"):
+# https://github.com/cms-sw/cmssw/blob/master/FWCore/PythonUtilities/python/LumiList.py#L182
+def lumimask_or(ajson, bjson):
+    result = {}
+    aruns = list(ajson.keys())
+    bruns = list(bjson.keys())
+    runs = set(aruns + bruns)
+    for run in runs:
+        overlap = sorted(ajson.get(run, []) + bjson.get(run, []))
+        unique = [copy.deepcopy(overlap[0])]
+        for pair in overlap[1:]:
+            if pair[0] >= unique[-1][0] and pair[0] <= unique[-1][1]+1 and pair[1] > unique[-1][1]:
+                unique[-1][1] = copy.deepcopy(pair[1])
+            elif pair[0] > unique[-1][1]:
+                unique.append(copy.deepcopy(pair))
+        result[run] = unique
+    result = dict(sorted(result.items()))
+    return result
+
+
+def mystr(item, fill = "null", ndigi = -1, scien = False):
+    result = str(item)
     if item:
-        return str(item)
-    return str(fill)
+        if ndigi >= 0 and scien:
+            result = '{:.{dec}e}'.format(item, dec = ndigi)
+    else:
+        result = str(fill)    
+    return result
 
 def prop_to_list(adict, prop):
     result = []

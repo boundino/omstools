@@ -46,7 +46,7 @@ usage: hltcount.py [-h] (--lumiranges LUMIRANGES | --timerange TIMERANGE) --path
 options:
   -h, --help            show this help message and exit
   --lumiranges LUMIRANGES
-                        (option 1) <run>(:<minLS>:<maxLS>) e.g. 373664:25:30,373710 || (option 2) <minrun>-<maxrun> e.g. 374345-374731 || (option 3) cert json file
+                        (option 1) <min_run>(:<LS>)-<max_run>(:<LS>) e.g. 374763-374778,374797-374834; (option 2) cert json file
   --timerange TIMERANGE
                         (option 4) <start_time>,<end_time>
   --pathnames PATHNAMES
@@ -56,35 +56,35 @@ options:
 * Example 1 (Use lumiranges)
     - Command
     ```
-    python3 hltcount.py --lumiranges 373710:100:150 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
+    python3 hltcount.py --lumiranges 374763-374778,374797-374834 --pathnames HLT_HIMinimumBiasHF1ANDZDC1nOR_v1,HLT_HIMinimumBiasHF1AND_v3
     ```
     - Screen
     ```
     Write to output file: outcsv/hltcount.csv
-    Summing up lumi sections: {'373710': [[100, 150]]}
-    ------------------------------------------------------------
-    |                                HLT Path |          Count |
-    ------------------------------------------------------------
-    |                         HLT_ZeroBias_v8 |          23688 |
-    |                 HLT_PPRefGEDPhoton40_v1 |           3075 |
-    |                      HLT_AK4PFJet100_v1 |           5764 |
-    ------------------------------------------------------------
+    Extracting lumisections with stable beams...
+    Summing up lumi sections: {'374763': [[68, 106]], '374764': [[1, 31]], '374765': [[1, 28]], '374766': [[1, 34]], '374767': [[1, 32]], '374768': [[1, 31]], '374778': [[36, 287]], '374803': [[5, 592]], '374804': [[1, 14]], '374810': [[49, 1748]], '374828': [[24, 66]], '374833': [[67, 304]], '374834': [[1, 12]]}
+    ------------------------------------------------------
+    | HLT Path                          |          Count |
+    ------------------------------------------------------
+    | HLT_HIMinimumBiasHF1ANDZDC1nOR_v1 |     1031991933 |
+    | HLT_HIMinimumBiasHF1AND_v3        |         811481 |
+    ------------------------------------------------------
     ```
 
 * Example 2 (Use json)
     - Command
     ```
-    python3 hltcount.py --lumiranges Cert_Collisions2022HISpecial_362293_362323_Golden.json --pathnames HLT_HIMinimumBias_v2
+    python3 hltcount.py --lumiranges examples/Cert_Collisions2022HISpecial_362293_362323_Golden.json --pathnames HLT_HIMinimumBias_v2
     ```
     - Screen
     ```
     Write to output file: outcsv/hltcount.csv
     Summing up lumi sections: {'362294': [[1, 53]], '362296': [[1, 59]], '362297': [[1, 199]], '362315': [[46, 96]], '362316': [[1, 18]], '362317': [[1, 11]], '362318': [[1, 58]], '362319': [[1, 24], [30, 50], [60, 66]], '362320': [[1, 193]], '362321': [[1, 356]], '362322': [[1, 31]], '362323': [[1, 416], [447, 590]]}
-    ------------------------------------------------------------
-    |                                HLT Path |          Count |
-    ------------------------------------------------------------
-    |                    HLT_HIMinimumBias_v2 |       34031546 |
-    ------------------------------------------------------------
+    -----------------------------------------
+    | HLT Path             |          Count |
+    -----------------------------------------
+    | HLT_HIMinimumBias_v2 |       34031546 |
+    -----------------------------------------
     ```
 
 * Example 3 (Use time range)
@@ -95,15 +95,17 @@ options:
     - Screen
     ```
     Write to output file: outcsv/hltcount.csv
-    Summing up lumi sections: {'373664': [[62, 194]], '373681': [[1, 45], [47, 134]], '373697': [[1, 151]], '373703': [[1, 112]], '373705': [[1, 186]], '373710': [[1, 832]]}
-    ------------------------------------------------------------
-    |                                HLT Path |          Count |
-    ------------------------------------------------------------
-    |                         HLT_ZeroBias_v8 |         410750 |
-    |                 HLT_PPRefGEDPhoton40_v1 |          45441 |
-    |                      HLT_AK4PFJet100_v1 |          83710 |
-    ------------------------------------------------------------
+    Extracting lumisections with stable beams...
+    Summing up lumi sections: {'373710': [[7, 832]]}
+    --------------------------------------------
+    | HLT Path                |          Count |
+    --------------------------------------------
+    | HLT_ZeroBias_v8         |         381927 |
+    | HLT_PPRefGEDPhoton40_v1 |          44933 |
+    | HLT_AK4PFJet100_v1      |          83279 |
+    --------------------------------------------
     ```
+
 ### `ratetable.py`
 * HLT paths or L1 rates or counts for a given set of runs/lumi sections
 ```

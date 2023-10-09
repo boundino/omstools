@@ -1,5 +1,6 @@
 import json
 import argparse
+import copy
 
 from util.oms import omsapi
 import util.utility as u
@@ -21,10 +22,7 @@ def getcount(runlumijson, path, omsapi = o.omsapi):
             lumimin = ls[0]
             lumimax = ls[1]
         
-            if lumimin >= 0:
-                q.filter("first_lumisection_number", lumimin, "GE")
-            if lumimax >= 0:
-                q.filter("last_lumisection_number", lumimax, "LE")
+            q.filter("first_lumisection_number", lumimin, "GE").filter("last_lumisection_number", lumimax, "LE")
 
             datajson = q.data().json()
             for ls in datajson["data"]:
@@ -35,9 +33,9 @@ def getcount(runlumijson, path, omsapi = o.omsapi):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Print HLT counts in given lumi ranges of runs')
     group = parser.add_mutually_exclusive_group(required = True)
-    group.add_argument('--lumiranges', help = '(option 1) <run>(:<minLS>:<maxLS>) e.g. 373664:25:30,373710 || (option 2) cert json file')
+    group.add_argument('--lumiranges', help = '(option 1) <min_run>(:<LS>)-<max_run>(:<LS>) e.g. 374763-374778,374797-374834; (option 2) cert json file')
     group.add_argument('--timerange', help = '(option 3) <start_time>,<end_time>')
-    parser.add_argument('--pathnames', required = True, help = 'List of HLT paths, (option 1) HLT_1,HLT_2,HLT_3 (option 2) .txt file with each line as an HLT path')
+    parser.add_argument('--pathnames', required = True, help = 'List of HLT paths, (option 1) HLT_1,HLT_2,HLT_3; (option 2) .txt file with each line as an HLT path')
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
     args = parser.parse_args()
 
@@ -50,62 +48,34 @@ if __name__ == "__main__":
             with open(lumiRangesStr[0]) as ff:
                 runlumi = json.load(ff)
         else:
+            print('\033[36mExtracting lumisections with \033[4mstable beams\033[0m\033[36m...\033[0m')
             if len(lumiRangesStr) == 1 and lumiRangesStr[0].endswith(".txt") :
                 text_file = open(lumiRangesStr[0], "r")
                 lines = text_file.read().splitlines()
                 lumiRangesStr = lines
 
-            newlumiRangesStr = []
             for str in lumiRangesStr:
-                lumistr = str.split(":")
                 lumiran = str.split("-")
-                if len(lumistr) == 2:
-                    newlumiRangesStr.append(str)
-                if len(lumistr) == 1 and len(lumiran) == 2:
-                    datas = o.get_by_range("run_number", lumiran[0], lumiran[1], "runs")
-                    datas = o.filter_data_list(datas, 'stable_beam', True)
-                    newlumiRangesStr.extend(u.prop_to_list(datas, "id"))
-                elif len(lumistr) == 1:
-                    newlumiRangesStr.append(str)
-
-            for str in newlumiRangesStr:
-                lumistr = str.split(":")
-                lumiran = str.split("-")
-
-                if len(lumistr) == 2:
-                    lumistr.extend([lumistr[1]])
-                if len(lumistr) == 1:
-                    lumistr.extend(['-1', '-1'])
-                thisrun = lumistr[0]
-                thismin = int(lumistr[1])
-                thismax = int(lumistr[2])
-                if thismin > thismax: 
-                    print("\033[31merror: bad lumi range: \"\033[4m" + str + "\033[0m\033[31m\", skip it..\033[0m")
-                    continue
-                    
-                if thisrun not in runlumi:
-                    runlumi[thisrun] = []
-                    runlumi[thisrun].append([thismin, thismax])
-                else:
-                    treat = 0
-                    for ls in runlumi[thisrun]:
-                        if (thismin <= ls[0] or thismin < 0) and (thismax >= ls[0]):
-                            ls[0] = thismin
-                            treat = 1
-                        if (thismax >= ls[1] or thismax < 0) and (thismin <= ls[1]):
-                            ls[1] = thismax
-                            treat = 1
-                    if treat == 0:
-                        runlumi[thisrun].append([thismin, thismax])
+                if len(lumiran) == 1:
+                    lumiran.append(lumiran[0])
+                datas = o.get_ls_by_range(lumiran[0], lumiran[1])
+                datas = o.filter_data_list(datas, "beams_stable", True)
+                thisjson = o.get_json_by_lumi(datas)
+                runlumi = u.lumimask_or(runlumi, thisjson)
 
     if args.timerange:
+        print('\033[36mExtracting lumisections with \033[4mstable beams\033[0m\033[36m...\033[0m')
         timebs = args.timerange.split(",")
         if len(timebs) == 2:
-            datas = o.get_runs_by_time(timebs[0], timebs[1], "lumisections")
+            datas = o.get_by_range(category = "lumisections",
+                                   var = "start_time", var2 = "end_time",
+                                   lmin = timebs[0], lmax = timebs[1],
+                                   per_page = 100)
             # print(datas)
+            datas = o.filter_data_list(datas, "beams_stable", True)
             runlumi = o.get_json_by_lumi(datas)
 
-    print("Summing up lumi sections: \033[4;32;1m", end = "")
+    print("Summing up lumi sections: \033[4;32m", end = "")
     print(runlumi, end = "")
     print("\033[0m")
 
