@@ -16,11 +16,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     start_time = args.timemin
-    if args.timemax:
-        end_time = args.timemax
-    else:
-        end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-
+    end_time = args.timemax
     datas = o.get_runs_by_time(start_time, end_time)
 
     unit = "mub"

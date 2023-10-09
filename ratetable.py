@@ -37,7 +37,7 @@ if __name__ == "__main__":
         key_l1 = "pre_dt_before_prescale_" + key_var
         print("Pre-DT before PS", end = "")
     else:
-        print("Post-DT", end = "")
+        print("Post-DT after PS", end = "")
     print("\033[0m")
         
 
