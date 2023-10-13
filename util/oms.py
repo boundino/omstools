@@ -94,7 +94,7 @@ def print_run_title(onlyline = False, unit = "mub"):
     print('-' * 161)
     
 # may crash when the range is large for filldetails
-def get_by_range(var, lmin, lmax, category, var2 = None, per_page = 10):
+def get_by_range(var, lmin, lmax, category, var2 = None, per_page = 10, onlystable = False):
     q = omsapi.query(category)
     q.set_verbose(False)
     if var2 is None: var2 = var
@@ -102,9 +102,19 @@ def get_by_range(var, lmin, lmax, category, var2 = None, per_page = 10):
         q.filter(var, lmin, "GE")
     if lmax is not None:
         q.filter(var2, lmax, "LE")
+    if onlystable:
+        if category == "runs":
+            q.filter("stable_beam", "true")
+        elif category == "lumisections":
+            q.filter("beams_stable", "true")
+        elif category == "filldetails":
+            q.filter("stable_beams", "true")
+        else:
+            print("warning: no \"stable\" recorded for this category: "+category)
     datas = []
     ipage = 1
     while True:
+        u.progressbars()
         q.paginate(page = ipage, per_page = per_page)
         qjson = q.data().json()
         data = qjson["data"]
@@ -115,6 +125,7 @@ def get_by_range(var, lmin, lmax, category, var2 = None, per_page = 10):
         if qjson["links"]["next"] is None:
             break;
         ipage = ipage+1
+    u.progressbars_summary(ipage - 1)
     return datas
     
 def get_runs_by_time(start_time = None, end_time = None):
@@ -195,12 +206,14 @@ def get_by_array(var, array, category):
     q.set_verbose(False)
     datas = []
     for a in array:
+        u.progressbars()
         q.clear_filter()
         q.filter(var, a)
         qjson = q.data().json()
         data = qjson["data"]
         datas.extend(data)
-
+    u.progressbars_summary(len(array))
+    
     return datas
     
 def get_rate_by_runls(run, ls = None, category = "hlt"):
@@ -224,6 +237,7 @@ def get_rate_by_runls(run, ls = None, category = "hlt"):
     datas = []
     ipage = 1
     while True:
+        u.progressbars()
         q.paginate(page = ipage, per_page = 100)
         qjson = q.data().json()
         data = qjson["data"]
@@ -231,6 +245,7 @@ def get_rate_by_runls(run, ls = None, category = "hlt"):
         if qjson["links"]["next"] is None:
             break;
         ipage = ipage+1
+    print()
     return datas
     
 def get_hltlist_by_run(run):

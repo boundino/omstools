@@ -36,8 +36,8 @@ if __name__ == "__main__":
     if args.timemax:
         end_time = args.timemax
     else:
-        # end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-        end_time = None
+        end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+        # end_time = None
         
     runs = o.get_runs_by_time(start_time, end_time)
     r_runs = translate(runs, ["duration",
@@ -53,8 +53,9 @@ if __name__ == "__main__":
                               "l1_menu",
                               "cmssw_version",
                               "stable_beam",
+                              "l1_key",
                               "components_out"], "runs")
-    
+    print("runs done.")
     with open('../cms-hin-coordination/webs/public/run/js/runs.js', 'w') as f:
         print('let runinfo = ', file = f)
         json.dump(r_runs, f, indent = 2)
@@ -70,7 +71,27 @@ if __name__ == "__main__":
                                 "fill_type_party1",
                                 "bunches_colliding",
                                 ], "fills")
-
+    print("fills done.")
     with open('../cms-hin-coordination/webs/public/run/js/fills.js', 'w') as f:
         print('let fillinfo = ', file = f)
         json.dump(r_fills, f, indent = 2)
+
+    # lumisections = o.get_by_range(category = "lumisections",
+    #                               var = "start_time", var2 = "end_time",
+    #                               lmin = "2023-09-26T00:00", lmax = end_time,
+    #                               per_page = 100, onlystable = True)
+    # mega = lumisections[0]["meta"]
+    # mega["lasttime"] = end_time
+    # # lumisections = o.filter_data_list(lumisections, "beams_stable", True)
+    # r_lumisections = translate(lumisections, ["start_time",
+    #                                           "end_time",
+    #                                           # "run_number",
+    #                                           # "lumisection_number",
+    #                                           "delivered_lumi",
+    #                                           "recorded_lumi",
+    #                                           "prescale_name",
+    #                                           ], "lumisections")
+    # f_lumisections = { "data": r_lumisections, "mega": mega }
+    # with open('../cms-hin-coordination/webs/public/run/js/lumisections.js', 'w') as f:
+    #     print('let lumisectioninfo = ', file = f)
+    #     json.dump(f_lumisections, f, indent = 2)

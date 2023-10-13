@@ -34,7 +34,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Print HLT counts in given lumi ranges of runs')
     group = parser.add_mutually_exclusive_group(required = True)
     group.add_argument('--lumiranges', help = '(option 1) <min_run>(:<LS>)-<max_run>(:<LS>) e.g. 374763-374778,374797-374834; (option 2) cert json file')
-    group.add_argument('--timerange', help = '(option 3) <start_time>,<end_time>')
+    group.add_argument('--timerange', help = '(option 3) <start_time>-<end_time>')
     parser.add_argument('--pathnames', required = True, help = 'List of HLT paths, (option 1) HLT_1,HLT_2,HLT_3; (option 2) .txt file with each line as an HLT path')
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
     args = parser.parse_args()
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     if args.timerange:
         print('\033[36mExtracting lumisections with \033[4mstable beams\033[0m\033[36m...\033[0m')
-        timebs = args.timerange.split(",")
+        timebs = args.timerange.split("-")
         if len(timebs) == 2:
             datas = o.get_by_range(category = "lumisections",
                                    var = "start_time", var2 = "end_time",

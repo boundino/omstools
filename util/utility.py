@@ -87,3 +87,7 @@ def prop_to_list(adict, prop):
     return result
 
 
+def progressbars():
+    print(u'\033[2m\u25ac\033[0m', end = "", flush = True)
+def progressbars_summary(npage):
+    print(' \033[2m{n}/{n} done.\033[0m'.format(n = npage))
