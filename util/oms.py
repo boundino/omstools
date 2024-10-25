@@ -109,6 +109,8 @@ def get_by_range(var, lmin, lmax, category, var2 = None, per_page = 10, onlystab
             q.filter("beams_stable", "true")
         elif category == "filldetails":
             q.filter("stable_beams", "true")
+        elif category == "filldetailx":
+            q.filter("stable_beams", "true")
         else:
             print("warning: no \"stable\" recorded for this category: "+category)
     datas = []

@@ -21,7 +21,7 @@ def translate_lumi_unit(unit, tounit):
         sf = 1.e6
     elif "nb" in unit:
         sf = 1.e3
-    elif "\mu" in unit:
+    elif "mu" in unit:
         sf = 1.
 
     if "nb" in tounit:
