@@ -247,7 +247,7 @@ def get_rate_by_runls(run, ls = None, category = "hlt"):
         if qjson["links"]["next"] is None:
             break;
         ipage = ipage+1
-    print()
+    u.progressbars_summary(ipage - 1)
     return datas
     
 def get_hltlist_by_run(run):

@@ -1,6 +1,6 @@
 set -x
 
-python3 hltcount.py --lumiranges 373710:100:150 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
+python3 hltcount.py --lumiranges 373710:100-373710:150 --pathnames HLT_ZeroBias_v8,HLT_PPRefGEDPhoton40_v1,HLT_AK4PFJet100_v1
 
 # certjson=/eos/user/c/cmsdqm/www/CAF/certification/Collisions22/Collisions2022HISpecial/Cert_Collisions2022HISpecial_362293_362323_Golden.json
 certjson=examples/Cert_Collisions2022HISpecial_362293_362323_Golden.json
