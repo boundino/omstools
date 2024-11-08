@@ -36,13 +36,17 @@ if __name__ == "__main__":
     #                         [["run_number", "374288", "EQ"]]),
     #           "lumisections")
 
-    save_json(get_by_filter("hltpathrates",
-                            [["run_number", "374288", "EQ"], ["first_lumisection_number", 10, "GE"], ["last_lumisection_number", 12, "LE"], ["path_name", "HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v6", "EQ"]]),
-              "hltpathrates")
+    # save_json(get_by_filter("hltpathrates",
+    #                         [["run_number", "374288", "EQ"], ["first_lumisection_number", 10, "GE"], ["last_lumisection_number", 12, "LE"], ["path_name", "HLT_HIUPC_ZeroBias_SinglePixelTrack_MaxPixelTrack_v6", "EQ"]]),
+    #           "hltpathrates")
 
     # save_json(get_by_filter("l1configurationkeys",
-    #                         [["run_number", "373710", "EQ"]]),
-    #           "l1configurationkeys")
+    #                         [["run_number", "374925", "EQ"]]),
+    #           "l1configurationkeys_374925")
+
     # save_json(get_by_filter("runs",
-    #                         [["run_number", "373710", "EQ"]]),
+    #                         [["run_number", "374810", "EQ"]]),
     #           "runs")
+    save_json(get_by_filter("filldetailx",
+                            [["fill_number", "9232", "EQ"]]),
+              "filldetailx")

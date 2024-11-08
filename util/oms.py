@@ -98,10 +98,13 @@ def get_by_range(var, lmin, lmax, category, var2 = None, per_page = 10, onlystab
     q = omsapi.query(category)
     q.set_verbose(False)
     if var2 is None: var2 = var
-    if lmin is not None:
-        q.filter(var, lmin, "GE")
-    if lmax is not None:
-        q.filter(var2, lmax, "LE")
+    if lmin is not None and lmin == lmax:
+        q.filter(var, lmin, "EQ")
+    else:
+        if lmin is not None:
+            q.filter(var, lmin, "GE")
+        if lmax is not None:
+            q.filter(var2, lmax, "LE")
     if onlystable:
         if category == "runs":
             q.filter("stable_beam", "true")
