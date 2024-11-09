@@ -61,14 +61,14 @@ if __name__ == "__main__":
             trigs = o.get_rate_by_runls(run, ele["lumisection_number"], category = trigtype, path = pathname)
 	    # hlts = o.get_rate_by_runls(run, ele["lumisection_number"], category = "hlt")
             for tt in trigs:
-                if pathname == tt["attributes"]["name"]:
-                    if trigtype == "l1":
-                        rate_var = key_l1
-                    else:
-                        rate_var = "rate"
-                    if rate_var in tt["attributes"]:
-                        ele["rate"] = tt["attributes"][rate_var]
-                    break;
+                # if pathname == tt["attributes"]["name"]:
+                if trigtype == "l1":
+                    rate_var = key_l1
+                else:
+                    rate_var = "rate"
+                if rate_var in tt["attributes"]:
+                    ele["rate"] = tt["attributes"][rate_var]
+                break;
             if not ele["rate"]: continue
             results[run].append(ele)
         u.progressbars_summary(len(lumisections))
@@ -106,6 +106,6 @@ if __name__ == "__main__":
     plt.ylim(bottom=0)  # Set minimum value of y-axis to 0
 
     os.system('mkdir -p figs')
-    plt.savefig('figs/ratevsls_'+pathname+'.png', format="png", dpi=300, bbox_inches="tight")
+    plt.savefig('figs/ratevsls_'+pathname+'.png', format="png", dpi=150, bbox_inches="tight")
     print('open \033[4mfigs/ratevsls_'+pathname+'.png\033[0m')
     os.system('open figs/ratevsls_'+pathname+'.png')

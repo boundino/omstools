@@ -233,7 +233,10 @@ def get_rate_by_runls(run, ls = None, category = "hlt", path = None):
     q.set_validation(False)
     q.filter("run_number", run)
     if path:
-        q.filter("name", path)
+        if category == "l1":
+            q.filter("name", path)
+        if category == "hlt":
+            q.filter("path_name", path)
     if not ls:
         if "hlt" not in category:
             q.custom("group[granularity]", "run")
@@ -247,6 +250,8 @@ def get_rate_by_runls(run, ls = None, category = "hlt", path = None):
         # u.progressbars()
         q.paginate(page = ipage, per_page = 100)
         qjson = q.data().json()
+        if "data" not in qjson:
+            break
         data = qjson["data"]
         datas.extend(data)
         if qjson["links"]["next"] is None:
