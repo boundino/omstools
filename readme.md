@@ -117,7 +117,7 @@ options:
     python3 ratevsls.py --pathname L1_MinimumBiasHF1_AND_BptxAND --runs 387853,387867,387892,387963,387973
     ```
     - Image
-    <img src="./figs/ratevsls_L1_MinimumBiasHF1_AND_BptxAND.png" alt="drawing" width="40%"/>
+    <img src="./examples/ratevsls_L1_MinimumBiasHF1_AND_BptxAND.png" alt="drawing" width="50%"/>
     
 ### `ratetable.py`
 * HLT paths or L1 rates or counts for a given set of runs/lumi sections
