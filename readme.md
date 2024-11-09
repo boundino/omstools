@@ -3,6 +3,7 @@
 * [Install](#install)
 * [Usage](#usage)
     - [hltcount.py](#hltcountpy): HLT counts in given lumi section ranges of time range
+    - [ratevsls.py](#ratevsls): Draw rate vs inst lumi
     - [ratetable.py](#ratetablepy): HLT/L1 rates/counts comparison between run or lumi sections
 
 ## Install
@@ -97,6 +98,27 @@ options:
     --------------------------------------------
     ```
 
+### `ratevsls.py`
+* HLT paths or L1 rates or counts for a given set of runs/lumi sections
+```
+usage: ratevsls.py [-h] --runs RUNS --pathname PATHNAME [--l1postdt] [--outcsv OUTCSV]
+HLT or L1 rates vs lumi sections for selected runs
+
+options:
+  -h, --help           show this help message and exit
+  --runs RUNS          run number list
+  --pathname PATHNAME  HLT path or L1 seed
+  --l1postdt           Optional store L1 post DT rate instead of pre PS rate
+  --outcsv OUTCSV      Optional csv output file
+```
+* Example
+    - Command
+    ```
+    python3 ratevsls.py --pathname L1_MinimumBiasHF1_AND_BptxAND --runs 387853,387867,387892,387963,387973
+    ```
+    - Image
+    <img src="./figs/ratevsls_L1_MinimumBiasHF1_AND_BptxAND.png" alt="drawing" width="40%"/>
+    
 ### `ratetable.py`
 * HLT paths or L1 rates or counts for a given set of runs/lumi sections
 ```

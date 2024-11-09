@@ -221,7 +221,7 @@ def get_by_array(var, array, category):
     
     return datas
     
-def get_rate_by_runls(run, ls = None, category = "hlt"):
+def get_rate_by_runls(run, ls = None, category = "hlt", path = None):
     if "hlt" in category:
         if not ls:
             q = omsapi.query("hltpathinfo")
@@ -232,6 +232,8 @@ def get_rate_by_runls(run, ls = None, category = "hlt"):
     q.set_verbose(False)
     q.set_validation(False)
     q.filter("run_number", run)
+    if path:
+        q.filter("name", path)
     if not ls:
         if "hlt" not in category:
             q.custom("group[granularity]", "run")
@@ -242,7 +244,7 @@ def get_rate_by_runls(run, ls = None, category = "hlt"):
     datas = []
     ipage = 1
     while True:
-        u.progressbars()
+        # u.progressbars()
         q.paginate(page = ipage, per_page = 100)
         qjson = q.data().json()
         data = qjson["data"]
@@ -250,7 +252,7 @@ def get_rate_by_runls(run, ls = None, category = "hlt"):
         if qjson["links"]["next"] is None:
             break;
         ipage = ipage+1
-    u.progressbars_summary(ipage - 1)
+    # u.progressbars_summary(ipage - 1)
     return datas
     
 def get_hltlist_by_run(run):
