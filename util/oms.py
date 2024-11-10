@@ -24,7 +24,7 @@ def get_item_data(jsdata, key, value):
 
 def get_run_info(run, verbose, omsapi = omsapi):
     q = omsapi.query("runs")
-    q.set_verbose(True)
+    q.set_verbose(False)
     q.filter("run_number", run)
     data = q.data().json()["data"]
     if not data:
