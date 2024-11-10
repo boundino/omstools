@@ -24,7 +24,7 @@ def get_item_data(jsdata, key, value):
 
 def get_run_info(run, verbose, omsapi = omsapi):
     q = omsapi.query("runs")
-    q.set_verbose(False)
+    q.set_verbose(True)
     q.filter("run_number", run)
     data = q.data().json()["data"]
     if not data:
@@ -46,6 +46,7 @@ def print_run(data, tounit = "mub"):
     else:
         print("\033[31;1mNo\033[0m")
     print("    Time: " + u.mystr(attr["start_time"]).replace("T", " ").replace("Z", "") + " - " + u.mystr(attr["end_time"]).replace("T", " ").replace("Z", ""))
+    print("    Last lumisections: \033[4m" + u.mystr(attr["last_lumisection_number"]) + "\033[0m")
     for att in [{ "key" : "fill_number", "desc" : "Fill"}, {"key" : "l1_menu", "desc" : "L1 menu"}, {"key" : "hlt_key", "desc" : "HLT menu"}]:
         if attr[att["key"]]:
             print("    "+att["desc"]+": \033[4m" + u.mystr(attr[att["key"]]) + "\033[0m")
@@ -130,7 +131,7 @@ def get_by_range(var, lmin, lmax, category, var2 = None, per_page = 10, onlystab
         if qjson["links"]["next"] is None:
             break;
         ipage = ipage+1
-    u.progressbars_summary(ipage - 1)
+    u.progressbars_summary(ipage)
     return datas
     
 def get_runs_by_time(start_time = None, end_time = None):
@@ -223,7 +224,7 @@ def get_by_array(var, array, category):
     
 def get_rate_by_runls(run, ls = None, category = "hlt", path = None):
     if "hlt" in category:
-        if not ls:
+        if ls is None:
             q = omsapi.query("hltpathinfo")
         else:
             q = omsapi.query("hltpathrates")
@@ -237,17 +238,18 @@ def get_rate_by_runls(run, ls = None, category = "hlt", path = None):
             q.filter("name", path)
         if category == "hlt":
             q.filter("path_name", path)
-    if not ls:
+    if ls is None:
         if "hlt" not in category:
             q.custom("group[granularity]", "run")
     else:
         q.custom("group[granularity]", "lumisection")
-        q.filter("lumisection_number", ls)
+        if ls > 0:
+            q.filter("lumisection_number", ls)
         
     datas = []
     ipage = 1
     while True:
-        # u.progressbars()
+        u.progressbars()
         q.paginate(page = ipage, per_page = 100)
         qjson = q.data().json()
         if "data" not in qjson:
@@ -257,7 +259,7 @@ def get_rate_by_runls(run, ls = None, category = "hlt", path = None):
         if qjson["links"]["next"] is None:
             break;
         ipage = ipage+1
-    # u.progressbars_summary(ipage - 1)
+    u.progressbars_summary(ipage)
     return datas
     
 def get_hltlist_by_run(run):
