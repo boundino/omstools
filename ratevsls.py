@@ -38,9 +38,9 @@ if __name__ == "__main__":
 
     for run in runs:
         rundetails = o.get_run_info(run, verbose = True)
-        print("\033[36mGetting stable lumisections...\033[0m")
+        print("\033[2mGetting stable lumisections...\033[0m")
         lumisections = o.get_by_range("run_number", run, run, "lumisections", per_page = 100, onlystable = True)
-        print("\033[36mGetting rate...\033[0m")
+        print("\033[2mGetting rate...\033[0m")
         rates = o.get_rate_by_runls(run, 0, category = trigtype, path = pathname)
     
         results[run] = []
@@ -79,7 +79,7 @@ if __name__ == "__main__":
                     print(u.mystr(ele[e]) + ", ", file = f, end = "")
                 print(file = f)
 
-    color = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink", "tab:gray", "tab:olive", "tab:cyan", "tab:yellow", "tab:bluegreen", "tab:orangebrown", "tab:greenyellow", "tab:redorange", "tab:purpleblue", "tab:pinkred", "tab:graybrown", "tab:greenyellow", "tab:lightblue"]
+    color = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:pink", "tab:brown", "tab:gray", "tab:olive", "tab:cyan", "tab:yellow", "tab:bluegreen", "tab:orangebrown", "tab:greenyellow", "tab:redorange", "tab:purpleblue", "tab:pinkred", "tab:graybrown", "tab:greenyellow", "tab:lightblue"]
     i = 0
     for run in results:
         x = []
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         for ls in results[run]:
             x.append(ls["init_lumi"])
             y.append(ls["rate"])
-        plt.scatter(x, y, s=20, c=color[i], alpha=0.7, label=u.mystr(run))
+        plt.scatter(x, y, s=20, c=color[i], alpha=0.5, label=u.mystr(run))
         i = i+1
 
     plt.xlabel("Inst luminosity")
