@@ -11,15 +11,19 @@ def translate(datas, keys = [], category = "runs"):
     results = {}
     for d in datas:
         if "run" in category:
-            # hltkey = d["attributes"]["hlt_key"]
-            # if not hltkey or not d["attributes"]["hlt_physics_throughput"]:
-            #     continue
-            # if "PRef" not in hltkey and "HI" not in hltkey:
-            #     continue
-            trigger_mode = d["attributes"]["trigger_mode"]
-            if not trigger_mode or ("ppref_" not in trigger_mode and "_hi" not in trigger_mode):
+            hltkey = d["attributes"]["hlt_key"]
+            if not hltkey or ("PRef" not in hltkey
+                              and "HI" not in hltkey
+                              and "ppRef" not in hltkey
+                              and "HeavyIon" not in hltkey
+                              and "Protonion" not in hltkey):
                 continue
+            # trigger_mode = d["attributes"]["trigger_mode"]
+            # if not trigger_mode or ("ppref_" not in trigger_mode and "_hi" not in trigger_mode):
+            #     continue
             if not d["attributes"]["recorded_lumi"] or d["attributes"]["recorded_lumi"] <= 0:
+                continue
+            if not d["attributes"]["delivered_lumi"] or d["attributes"]["delivered_lumi"] <= 0:
                 continue
             if not d["attributes"]["l1_rate"] or d["attributes"]["l1_rate"] <= 0:
                 continue
@@ -29,6 +33,13 @@ def translate(datas, keys = [], category = "runs"):
         r = {}
         for k in keys:
             r[k] = d["attributes"][k]
+
+        r["delivered_lumi_units"] = ""
+        r["recorded_lumi_units"] = ""
+        if "delivered_lumi" in d["meta"]["row"]:
+            r["delivered_lumi_units"] = d["meta"]["row"]["delivered_lumi"]["units"]
+        if "recorded_lumi" in d["meta"]["row"]:
+            r["recorded_lumi_units"] = d["meta"]["row"]["recorded_lumi"]["units"]
         results[d["id"]] = r
     return results
 
@@ -71,41 +82,40 @@ def filljs(runs, outdir):
         json.dump(r_fills, f, indent = 2)
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser(description = 'Save js for web')
-    # parser.add_argument('--timemin', required = True, help = 'Start date, e.g. 2023-09-19T18:00:00')
-    # parser.add_argument('--timemax', required = False, help = 'Optional End date, e.g. 2023-09-20')
-    # args = parser.parse_args()
-
-    # start_time = args.timemin
-    # if args.timemax:
-    #     end_time = args.timemax
-    # else:
-    #     # end_time = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-    #     end_time = None
         
     # runs = o.get_runs_by_time(start_time, end_time)
 
-    # runs_ppref = o.get_by_range(var = "era", lmin = "Run2024J", lmax = "Run2024J", category = "runs", per_page = 100)
-    # filljs(runs_ppref, '../cms-hin-coordination/webs/public/run2024/ppref/js/')
-    runs_PbPb = o.get_by_range(var = "era", lmin = "HIRun2024A", lmax = "HIRun2024A", category = "runs", per_page = 100)
-    filljs(runs_PbPb, '../cms-hin-coordination/webs/public/run2024/PbPb/js/')
+    runs_HIRun2024A = o.get_by_range(var = "era", lmin = "HIRun2024A", lmax = "HIRun2024B", category = "runs", per_page = 100)
+    filljs(runs_HIRun2024A, '../cms-hin-coordination/webs/public/runlist/HIRun2024AB/js/')
 
-    # lumisections = o.get_by_range(category = "lumisections",
-    #                               var = "start_time", var2 = "end_time",
-    #                               lmin = "2023-09-26T00:00", lmax = end_time,
-    #                               per_page = 100, onlystable = True)
-    # mega = lumisections[0]["meta"]
-    # mega["lasttime"] = end_time
-    # # lumisections = o.filter_data_list(lumisections, "beams_stable", True)
-    # r_lumisections = translate(lumisections, ["start_time",
-    #                                           "end_time",
-    #                                           # "run_number",
-    #                                           # "lumisection_number",
-    #                                           "delivered_lumi",
-    #                                           "recorded_lumi",
-    #                                           "prescale_name",
-    #                                           ], "lumisections")
-    # f_lumisections = { "data": r_lumisections, "mega": mega }
-    # with open('../cms-hin-coordination/webs/public/run/js/lumisections.js', 'w') as f:
-    #     print('let lumisectioninfo = ', file = f)
-    #     json.dump(f_lumisections, f, indent = 2)
+    # runs_Run2024J = o.get_by_range(var = "era", lmin = "Run2024J", lmax = "Run2024J", category = "runs", per_page = 100)
+    # filljs(runs_Run2024J, '../cms-hin-coordination/webs/public/runlist/Run2024J/js/')
+
+    # runs_HIRun2023A = o.get_by_range(var = "era", lmin = "HIRun2023A", lmax = "HIRun2023A", category = "runs", per_page = 100)
+    # filljs(runs_HIRun2023A, '../cms-hin-coordination/webs/public/runlist/HIRun2023A/js/')
+
+    # runs_Run2023F = o.get_by_range(var = "era", lmin = "Run2023F", lmax = "Run2023F", category = "runs", per_page = 100)
+    # filljs(runs_Run2023F, '../cms-hin-coordination/webs/public/runlist/Run2023F/js/')
+
+    # runs_HIRun2022A = o.get_by_range(var = "era", lmin = "HIRun2022A", lmax = "HIRun2022A", category = "runs", per_page = 100)
+    # filljs(runs_HIRun2022A, '../cms-hin-coordination/webs/public/runlist/HIRun2022A/js/')
+
+    # runs_HIRun2018A = o.get_by_range(var = "era", lmin = "HIRun2018A", lmax = "HIRun2018A", category = "runs", per_page = 100)
+    # filljs(runs_HIRun2018A, '../cms-hin-coordination/webs/public/runlist/HIRun2018A/js/')
+
+    # runs_Run2017G = o.get_by_range(var = "era", lmin = "2017G", lmax = "2017G", category = "runs", per_page = 100)
+    # filljs(runs_Run2017G, '../cms-hin-coordination/webs/public/runlist/Run2017G/js/')
+
+    # runs_XeXeRun2017 = o.get_by_range(var = "era", lmin = "XeXeRun2017", lmax = "XeXeRun2017", category = "runs", per_page = 100)
+    # filljs(runs_XeXeRun2017, '../cms-hin-coordination/webs/public/runlist/XeXeRun2017/js/')
+
+    # runs_PARun2016C = o.get_by_range(var = "era", lmin = "PARun2016C", lmax = "PARun2016C", category = "runs", per_page = 100)
+    # filljs(runs_PARun2016C, '../cms-hin-coordination/webs/public/runlist/PARun2016C/js/')
+
+    # runs_PARun2016B = o.get_by_range(var = "era", lmin = "PARun2016B", lmax = "PARun2016B", category = "runs", per_page = 100)
+    # filljs(runs_PARun2016B, '../cms-hin-coordination/webs/public/runlist/PARun2016B/js/')
+
+
+
+
+
