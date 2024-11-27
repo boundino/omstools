@@ -86,34 +86,34 @@ if __name__ == "__main__":
     # runs = o.get_runs_by_time(start_time, end_time)
 
     runs_HIRun2024A = o.get_by_range(var = "era", lmin = "HIRun2024A", lmax = "HIRun2024B", category = "runs", per_page = 100)
-    filljs(runs_HIRun2024A, '../cms-hin-coordination/webs/public/runlist/HIRun2024AB/js/')
+    filljs(runs_HIRun2024A, '../cms-hin-coordination/webs/public/datasets/HIRun2024AB/js/')
 
     # runs_Run2024J = o.get_by_range(var = "era", lmin = "Run2024J", lmax = "Run2024J", category = "runs", per_page = 100)
-    # filljs(runs_Run2024J, '../cms-hin-coordination/webs/public/runlist/Run2024J/js/')
+    # filljs(runs_Run2024J, '../cms-hin-coordination/webs/public/datasets/Run2024J/js/')
 
     # runs_HIRun2023A = o.get_by_range(var = "era", lmin = "HIRun2023A", lmax = "HIRun2023A", category = "runs", per_page = 100)
-    # filljs(runs_HIRun2023A, '../cms-hin-coordination/webs/public/runlist/HIRun2023A/js/')
+    # filljs(runs_HIRun2023A, '../cms-hin-coordination/webs/public/datasets/HIRun2023A/js/')
 
     # runs_Run2023F = o.get_by_range(var = "era", lmin = "Run2023F", lmax = "Run2023F", category = "runs", per_page = 100)
-    # filljs(runs_Run2023F, '../cms-hin-coordination/webs/public/runlist/Run2023F/js/')
+    # filljs(runs_Run2023F, '../cms-hin-coordination/webs/public/datasets/Run2023F/js/')
 
     # runs_HIRun2022A = o.get_by_range(var = "era", lmin = "HIRun2022A", lmax = "HIRun2022A", category = "runs", per_page = 100)
-    # filljs(runs_HIRun2022A, '../cms-hin-coordination/webs/public/runlist/HIRun2022A/js/')
+    # filljs(runs_HIRun2022A, '../cms-hin-coordination/webs/public/datasets/HIRun2022A/js/')
 
     # runs_HIRun2018A = o.get_by_range(var = "era", lmin = "HIRun2018A", lmax = "HIRun2018A", category = "runs", per_page = 100)
-    # filljs(runs_HIRun2018A, '../cms-hin-coordination/webs/public/runlist/HIRun2018A/js/')
+    # filljs(runs_HIRun2018A, '../cms-hin-coordination/webs/public/datasets/HIRun2018A/js/')
 
     # runs_Run2017G = o.get_by_range(var = "era", lmin = "2017G", lmax = "2017G", category = "runs", per_page = 100)
-    # filljs(runs_Run2017G, '../cms-hin-coordination/webs/public/runlist/Run2017G/js/')
+    # filljs(runs_Run2017G, '../cms-hin-coordination/webs/public/datasets/Run2017G/js/')
 
     # runs_XeXeRun2017 = o.get_by_range(var = "era", lmin = "XeXeRun2017", lmax = "XeXeRun2017", category = "runs", per_page = 100)
-    # filljs(runs_XeXeRun2017, '../cms-hin-coordination/webs/public/runlist/XeXeRun2017/js/')
+    # filljs(runs_XeXeRun2017, '../cms-hin-coordination/webs/public/datasets/XeXeRun2017/js/')
 
     # runs_PARun2016C = o.get_by_range(var = "era", lmin = "PARun2016C", lmax = "PARun2016C", category = "runs", per_page = 100)
-    # filljs(runs_PARun2016C, '../cms-hin-coordination/webs/public/runlist/PARun2016C/js/')
+    # filljs(runs_PARun2016C, '../cms-hin-coordination/webs/public/datasets/PARun2016C/js/')
 
     # runs_PARun2016B = o.get_by_range(var = "era", lmin = "PARun2016B", lmax = "PARun2016B", category = "runs", per_page = 100)
-    # filljs(runs_PARun2016B, '../cms-hin-coordination/webs/public/runlist/PARun2016B/js/')
+    # filljs(runs_PARun2016B, '../cms-hin-coordination/webs/public/datasets/PARun2016B/js/')
 
 
 
