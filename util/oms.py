@@ -59,10 +59,13 @@ def print_run(data, tounit = "mub"):
     else:
         delivered_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["delivered_lumi"]["units"], tounit)
         recorded_lumi_unit = u.translate_lumi_unit(data["meta"]["row"]["recorded_lumi"]["units"], tounit)
-    
-    print("    HLT physics throughput: \033[4m" + u.mystr(round(attr["hlt_physics_throughput"], 2)) + "\033[0m GB/s")
-    print("    L1 rate: \033[4m" + u.mystr(attr["l1_rate"]) + "\033[0m Hz")
-    print("    Lumi (recorded / delivered): \033[4m" + u.mystr(round(attr["recorded_lumi"]*recorded_lumi_unit, 2)) + "\033[0m / \033[4m" + u.mystr(round(attr["delivered_lumi"]*delivered_lumi_unit, 2)) + "\033[0m mub-1")
+
+    if attr["hlt_physics_throughput"]:
+        print("    HLT physics throughput: \033[4m" + u.mystr(round(attr["hlt_physics_throughput"], 2)) + "\033[0m GB/s")
+    if attr["l1_rate"]:
+        print("    L1 rate: \033[4m" + u.mystr(attr["l1_rate"]) + "\033[0m Hz")
+    if attr["recorded_lumi"] and attr["delivered_lumi"]:
+        print("    Lumi (recorded / delivered): \033[4m" + u.mystr(round(attr["recorded_lumi"]*recorded_lumi_unit, 2)) + "\033[0m / \033[4m" + u.mystr(round(attr["delivered_lumi"]*delivered_lumi_unit, 2)) + "\033[0m mub-1")
 
 def print_run_line(data, tounit = "mub"):
     attr = data["attributes"]

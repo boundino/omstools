@@ -7,12 +7,15 @@ import matplotlib.pyplot as plt
 import util.oms as o
 import util.utility as u
 
+stable_only = True
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'HLT or L1 rates vs lumi sections for selected runs')
     parser.add_argument('--runs', required = True, help = 'run number list')
     parser.add_argument('--pathname', required = True, help = 'HLT path or L1 seed')
     parser.add_argument('--l1postdt', required = False, help = 'Optional store L1 post DT rate instead of pre PS rate', action = "store_true")
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
+    parser.add_argument('--unstable', required = False, action='store_true', help = 'Include unstable runs and LSs')
     args = parser.parse_args()
     
     runs = args.runs.split(',')
@@ -23,6 +26,9 @@ if __name__ == "__main__":
     if args.l1postdt:
         key_l1 = "post_dt_rate"
     print(key_l1+"\033[0m")
+
+    if args.unstable:
+        stable_only = False
 
     if pathname.startswith("L1_"):
         trigtype = "l1"
@@ -39,14 +45,14 @@ if __name__ == "__main__":
     for run in runs:
         rundetails = o.get_run_info(run, verbose = True)
         print("\033[2mGetting stable lumisections...\033[0m")
-        lumisections = o.get_by_range("run_number", run, run, "lumisections", per_page = 100, onlystable = True)
+        lumisections = o.get_by_range("run_number", run, run, "lumisections", per_page = 100, onlystable = stable_only)
         print("\033[2mGetting rate...\033[0m")
         rates = o.get_rate_by_runls(run, 0, category = trigtype, path = pathname)
     
         results[run] = []
         for d in lumisections:
             attr = d["attributes"]
-            if attr["beams_stable"] == False or not attr["prescale_name"]: continue
+            if (stable_only and attr["beams_stable"] == False) or not attr["prescale_name"]: continue
             ele = { "lumisection_number" : attr["lumisection_number"],
                     "beams_stable" : attr["beams_stable"],
                     "start_time" : attr["start_time"],
@@ -65,7 +71,7 @@ if __name__ == "__main__":
                     break
             if not ele["rate"]: continue
             results[run].append(ele)
-    
+            
     outputfile = u.setoutput(args.outcsv, 'outcsv/ratevsls_'+pathname+'.csv')
     with open(outputfile, 'w') as f:
         for t in results[runs[0]][0]:
