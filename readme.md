@@ -14,7 +14,9 @@ cd omstools/
 * Add requirements
     - On private computer
     ```
-    pip3 install -r requirements.txt # private pc
+    python3 -m venv .venv # suggest using virtual environment
+    . .venv/bin/activate # activate the env every time you run the macro
+    pip3 install -r requirements.txt 
     ```
     - On lxplus8
     ```
@@ -31,6 +33,30 @@ CLIENT_SECRET = 'example_secret'
 ```
 
 ## Usage
+### `ratevsls.py`
+* HLT paths or L1 rates or counts for a given set of runs/lumi sections
+```
+usage: ratevsls.py [-h] --runs RUNS --pathname PATHNAME [--l1postdt] [--outcsv OUTCSV] [--unstable]
+HLT or L1 rates vs lumi sections for selected runs
+Generate a plot of trigger rate vs instantaneous luminosity
+
+options:
+  -h, --help           show this help message and exit
+  --runs RUNS          run number list
+  --pathname PATHNAME  HLT path or L1 seed
+  --l1postdt           Optional store L1 post DT rate instead of pre PS rate
+  --outcsv OUTCSV      Optional csv output file
+  --unstable           Include unstable runs and LSs
+```
+* Example
+    - Command
+    ```
+    python3 ratevsls.py --pathname L1_MinimumBiasHF1_AND_BptxAND --runs 387853,387867,387892,387963,387973
+    ```
+    - Image
+    <img src="./examples/ratevsls_L1_MinimumBiasHF1_AND_BptxAND.png" alt="drawing" width="50%"/>
+    
+
 ### `hltcount.py`
 * Print HLT counts in given lumi ranges 
 ```
@@ -98,27 +124,6 @@ options:
     --------------------------------------------
     ```
 
-### `ratevsls.py`
-* HLT paths or L1 rates or counts for a given set of runs/lumi sections
-```
-usage: ratevsls.py [-h] --runs RUNS --pathname PATHNAME [--l1postdt] [--outcsv OUTCSV]
-HLT or L1 rates vs lumi sections for selected runs
-
-options:
-  -h, --help           show this help message and exit
-  --runs RUNS          run number list
-  --pathname PATHNAME  HLT path or L1 seed
-  --l1postdt           Optional store L1 post DT rate instead of pre PS rate
-  --outcsv OUTCSV      Optional csv output file
-```
-* Example
-    - Command
-    ```
-    python3 ratevsls.py --pathname L1_MinimumBiasHF1_AND_BptxAND --runs 387853,387867,387892,387963,387973
-    ```
-    - Image
-    <img src="./examples/ratevsls_L1_MinimumBiasHF1_AND_BptxAND.png" alt="drawing" width="50%"/>
-    
 ### `ratetable.py`
 * HLT paths or L1 rates or counts for a given set of runs/lumi sections
 ```
