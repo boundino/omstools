@@ -2,8 +2,8 @@
 
 * [Install](#install)
 * [Usage](#usage)
-    - [hltcount.py](#hltcountpy): HLT counts in given lumi section ranges of time range
     - [ratevsls.py](#ratevsls): Draw rate vs inst lumi
+    - [hltcount.py](#hltcountpy): HLT counts in given lumi section ranges of time range
     - [ratetable.py](#ratetablepy): HLT/L1 rates/counts comparison between run or lumi sections
 
 ## Install
