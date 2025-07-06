@@ -143,6 +143,12 @@ def get_runs_by_time(start_time = None, end_time = None):
                          per_page = 100)
     return datas
 
+def get_runs_by_starttime(start_time = None, end_time = None):
+    datas = get_by_range(var = "start_time", lmin = start_time, lmax = end_time,
+                         category = "runs", var2 = "start_time",
+                         per_page = 100)
+    return datas
+
 def get_json_by_lumi(data):
     lumijson = {}
     for ls in data:

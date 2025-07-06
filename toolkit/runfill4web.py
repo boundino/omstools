@@ -16,7 +16,8 @@ def translate(datas, keys = [], category = "runs"):
                               and "HI" not in hltkey
                               and "ppRef" not in hltkey
                               and "HeavyIon" not in hltkey
-                              and "Protonion" not in hltkey):
+                              and "Protonion" not in hltkey
+                              and "PIon" not in hltkey):
                 continue
             # trigger_mode = d["attributes"]["trigger_mode"]
             # if not trigger_mode or ("ppref_" not in trigger_mode and "_hi" not in trigger_mode):
@@ -27,8 +28,8 @@ def translate(datas, keys = [], category = "runs"):
                 continue
             if not d["attributes"]["l1_rate"] or d["attributes"]["l1_rate"] <= 0:
                 continue
-            if not d["attributes"]["hlt_physics_throughput"] or d["attributes"]["hlt_physics_throughput"] <= 0:
-                continue
+            # if not d["attributes"]["hlt_physics_throughput"] or d["attributes"]["hlt_physics_throughput"] <= 0:
+            #     continue
 
         r = {}
         for k in keys:
@@ -82,11 +83,18 @@ def filljs(runs, outdir):
         json.dump(r_fills, f, indent = 2)
 
 if __name__ == "__main__":
-        
-    # runs = o.get_runs_by_time(start_time, end_time)
 
-    runs_HIRun2024A = o.get_by_range(var = "era", lmin = "HIRun2024A", lmax = "HIRun2024B", category = "runs", per_page = 100)
-    filljs(runs_HIRun2024A, '../cms-hin-coordination/webs/public/datasets/HIRun2024AB/js/')
+    start_time = "2025-06-27"
+    end_time = "2025-07-10"
+    runs = o.get_runs_by_starttime(start_time, end_time)
+    # print(runs)
+    filljs(runs, '../cms-hin-coordination/webs/public/datasets/Run2025OXY/js/')
+
+    # runs_Run2025OXY = o.get_by_range(var = "era", lmin = "pORun2025", lmax = "pORun2025", category = "runs", per_page = 100)
+    # filljs(runs_Run2025OXY, '../cms-hin-coordination/webs/public/datasets/pORun2025/js/')
+
+    # runs_HIRun2024A = o.get_by_range(var = "era", lmin = "HIRun2024A", lmax = "HIRun2024B", category = "runs", per_page = 100)
+    # filljs(runs_HIRun2024A, '../cms-hin-coordination/webs/public/datasets/HIRun2024AB/js/')
 
     # runs_Run2024J = o.get_by_range(var = "era", lmin = "Run2024J", lmax = "Run2024J", category = "runs", per_page = 100)
     # filljs(runs_Run2024J, '../cms-hin-coordination/webs/public/datasets/Run2024J/js/')
@@ -114,8 +122,4 @@ if __name__ == "__main__":
 
     # runs_PARun2016B = o.get_by_range(var = "era", lmin = "PARun2016B", lmax = "PARun2016B", category = "runs", per_page = 100)
     # filljs(runs_PARun2016B, '../cms-hin-coordination/webs/public/datasets/PARun2016B/js/')
-
-
-
-
 
