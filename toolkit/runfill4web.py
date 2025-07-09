@@ -85,13 +85,18 @@ def filljs(runs, outdir):
 if __name__ == "__main__":
 
     start_time = "2025-06-27"
-    end_time = "2025-07-10"
-    runs = o.get_runs_by_starttime(start_time, end_time)
-    # print(runs)
-    filljs(runs, '../cms-hin-coordination/webs/public/datasets/Run2025OXY/js/')
+    end_time = "2025-07-11"
+    # runs = o.get_runs_by_starttime(start_time, end_time)
+    # filljs(runs, '../cms-hin-coordination/webs/public/datasets/Run2025OXY/js/')
 
-    # runs_Run2025OXY = o.get_by_range(var = "era", lmin = "pORun2025", lmax = "pORun2025", category = "runs", per_page = 100)
-    # filljs(runs_Run2025OXY, '../cms-hin-coordination/webs/public/datasets/pORun2025/js/')
+    # runs_NeNeRun2025 = o.get_by_range(var = "era", lmin = "NeNeRun2025", lmax = "NeNeRun2025", category = "runs", per_page = 100)
+    # filljs(runs_NeNeRun2025, '../cms-hin-coordination/webs/public/datasets/NeNeRun2025/js/')
+
+    # runs_OORun2025 = o.get_by_range(var = "era", lmin = "OORun2025", lmax = "OORun2025", category = "runs", per_page = 100)
+    # filljs(runs_OORun2025, '../cms-hin-coordination/webs/public/datasets/OORun2025/js/')
+
+    # runs_pORun2025 = o.get_by_range(var = "era", lmin = "pORun2025", lmax = "pORun2025", category = "runs", per_page = 100)
+    # filljs(runs_pORun2025, '../cms-hin-coordination/webs/public/datasets/pORun2025/js/')
 
     # runs_HIRun2024A = o.get_by_range(var = "era", lmin = "HIRun2024A", lmax = "HIRun2024B", category = "runs", per_page = 100)
     # filljs(runs_HIRun2024A, '../cms-hin-coordination/webs/public/datasets/HIRun2024AB/js/')
