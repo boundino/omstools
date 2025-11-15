@@ -104,6 +104,7 @@ if __name__ == "__main__":
                     print(u.mystr(ele[e]) + ", ", file = f, end = "")
                 print(file = f)
 
+    plt.figure(figsize=(6, 6))
     i = 0
     for run in results:
         x = []
@@ -114,10 +115,10 @@ if __name__ == "__main__":
         plt.scatter(x, y, s=20, c=color_runs[i], alpha=0.5, label=u.mystr(run))
         i = i+1
 
-    plt.xlabel("Inst luminosity")
+    plt.xlabel(r"Inst luminosity [10$^{33}$ cm$^{-2}$ s$^{-1}$]")
     plt.ylabel("Rate")
     plt.title(pathname)
-    plt.legend()
+    plt.legend(frameon = False, loc = 'best', bbox_to_anchor = (0.26, 0.98))
 
     plt.xlim(left=0)  # Set minimum value of x-axis to 0
     plt.ylim(bottom=0)  # Set minimum value of y-axis to 0
