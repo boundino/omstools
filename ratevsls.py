@@ -18,13 +18,32 @@ if __name__ == "__main__":
     parser.add_argument('--unstable', required = False, action='store_true', help = 'Include unstable runs and LSs')
     args = parser.parse_args()
     
-    runs = args.runs.split(',')
+    inputruns = args.runs.split(',')
     pathname = args.pathname
 
+    runs = []
+    color = [ "tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
+              "tab:pink", "tab:brown", "tab:gray", "tab:olive", "tab:cyan",
+              "tab:yellow", "tab:bluegreen", "tab:orangebrown", "tab:greenyellow", "tab:redorange",
+              "tab:purpleblue", "tab:pinkred", "tab:graybrown", "tab:greenyellow", "tab:lightblue" ]
+    color_runs = []
+    for str_run in inputruns:
+        parts = str_run.split(":")
+        runs.append(parts[0])
+        if len(parts) > 1:
+            cc = "tab:" + parts[1]
+            if cc in color:
+                color.remove(cc)
+        else:
+            cc = color.pop(0) if color else "black"
+
+        color_runs.append(cc)
+    
     print("L1 rate option: \033[4m", end = "")
     key_l1 = "pre_dt_before_prescale_rate"
     if args.l1postdt:
         key_l1 = "post_dt_rate"
+
     print(key_l1+"\033[0m")
 
     if args.unstable:
@@ -85,7 +104,6 @@ if __name__ == "__main__":
                     print(u.mystr(ele[e]) + ", ", file = f, end = "")
                 print(file = f)
 
-    color = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:pink", "tab:brown", "tab:gray", "tab:olive", "tab:cyan", "tab:yellow", "tab:bluegreen", "tab:orangebrown", "tab:greenyellow", "tab:redorange", "tab:purpleblue", "tab:pinkred", "tab:graybrown", "tab:greenyellow", "tab:lightblue"]
     i = 0
     for run in results:
         x = []
@@ -93,7 +111,7 @@ if __name__ == "__main__":
         for ls in results[run]:
             x.append(ls["init_lumi"])
             y.append(ls["rate"])
-        plt.scatter(x, y, s=20, c=color[i], alpha=0.5, label=u.mystr(run))
+        plt.scatter(x, y, s=20, c=color_runs[i], alpha=0.5, label=u.mystr(run))
         i = i+1
 
     plt.xlabel("Inst luminosity")
