@@ -15,11 +15,15 @@ if __name__ == "__main__":
     parser.add_argument('--pathname', required = True, help = 'HLT path or L1 seed')
     parser.add_argument('--l1postdt', required = False, help = 'Optional store L1 post DT rate instead of pre PS rate', action = "store_true")
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
+    parser.add_argument('--label', required = False, help = 'Optional suffix for output figure and csv file')
     parser.add_argument('--unstable', required = False, action='store_true', help = 'Include unstable runs and LSs')
     args = parser.parse_args()
     
     inputruns = args.runs.split(',')
     pathname = args.pathname
+    outputname = 'ratevsls_' + pathname
+    if args.label:
+        outputname = f'{outputname}_{args.label}'
 
     runs = []
     color = [ "tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
@@ -91,7 +95,7 @@ if __name__ == "__main__":
             if not ele["rate"]: continue
             results[run].append(ele)
             
-    outputfile = u.setoutput(args.outcsv, 'outcsv/ratevsls_'+pathname+'.csv')
+    outputfile = u.setoutput(args.outcsv, 'outcsv/' + outputname + '.csv')
     with open(outputfile, 'w') as f:
         for t in results[runs[0]][0]:
             print(t + ", ", file = f, end = "")
@@ -124,6 +128,7 @@ if __name__ == "__main__":
     plt.ylim(bottom=0)  # Set minimum value of y-axis to 0
 
     os.system('mkdir -p figs')
-    plt.savefig('figs/ratevsls_'+pathname+'.png', format="png", dpi=200, bbox_inches="tight")
-    print('open \033[4mfigs/ratevsls_'+pathname+'.png\033[0m')
-    os.system('open figs/ratevsls_'+pathname+'.png')
+    figname = 'figs/' + outputname + '.png'
+    plt.savefig(figname, format = "png", dpi = 200, bbox_inches = "tight")
+    print('open \033[4m' + figname +'\033[0m')
+    os.system('open ' + figname)
