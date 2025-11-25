@@ -62,6 +62,7 @@ options:
     python3 ratevsls.py --pathname L1_MinimumBiasHF1_AND_BptxAND --runs 388095:blue,388004:blue,399710:red,399658:red,399660:red
     ```
     <img src="./examples/ratevsls_L1_MinimumBiasHF1_AND_BptxAND_assignedcolor.png" alt="drawing" width="50%"/>
+    
     It first checks whether the given color exists in the [Tableau Palette](https://matplotlib.org/stable/gallery/color/named_colors.html#tableau-palette).
     If it's not found there, it falls back to the corresponding name in the [CSS Colors](https://matplotlib.org/stable/gallery/color/named_colors.html#css-colors).
     Different runs may share the same color, which can sometimes make the results easier to interpret.
