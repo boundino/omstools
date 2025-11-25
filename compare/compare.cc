@@ -6,10 +6,10 @@
 int macro(std::string inputconfig) {
   auto conf = xjjc::config(inputconfig);
   auto inputs = xjjc::str_divide_trim(conf.get("INPUT"), ",");
-  auto outputname = conf.has("OUTPUT") ? conf.get("OUTPUT") : "compare" ;
+  auto outputname = conf.has("OUTPUT") ? conf.get("OUTPUT") : xjjc::str_erasestar(xjjc::str_erasestar(inputconfig, "*/"), ".*") ;
 
-  std::vector<std::string> ccs = { "azure", "red" };
-  if (inputs.size() > ccs.size()) return 2;
+  // std::vector<std::string> ccs = { "azure", "red", "cyan", "pink" };
+  std::vector<std::string> ccs = { "green", "yellow", "azure", "red" };
   std::vector<getdata*> lists;
 
   float x = 0.18, y = 0.80;
@@ -17,7 +17,7 @@ int macro(std::string inputconfig) {
   xjjroot::setleg(leg, 0.038);
   for (auto ii : inputs) {
     auto i = lists.size();
-    auto gd = new getdata(ii, xjjroot::mycolor_satmiddle[ccs[i]]);
+    auto gd = new getdata(ii, inputs.size() > ccs.size() ? kBlack : xjjroot::mycolor_satmiddle[ccs[i]]);
     lists.push_back(gd);
     leg->AddEntry(gd->g(), gd->tleg().c_str(), "p");
   }
@@ -49,3 +49,4 @@ int main(int argc, char* argv[]) {
   }
   return 1;
 }
+
