@@ -153,6 +153,10 @@ options:
     ```
     python3 ratetable.py --runls 373664,373710,373710:740 --pathnames examples/l1hlt.txt
     ```
+    or equivalently
+    ```
+    python3 ratetable.py --runls 373664,373710,373710:740 --pathnames HLT_AK4CaloJet100_v1,HLT_AK4PFJet100_v1,HLT_PPRefDmesonTrackingGlobal_Dpt60_v1,HLT_PPRefEle50Gsf_v1,HLT_PPRefGEDPhoton60_v1,HLT_PPRefZeroBias_v1,L1_DoubleMuOpen,L1_ZeroBias,L1_SingleJet60 
+    ```
     - Screen
     ```
     Variable option: rate
