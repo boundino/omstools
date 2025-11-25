@@ -3,6 +3,7 @@ import argparse
 import sys
 import os
 import matplotlib.pyplot as plt
+from matplotlib.colors import TABLEAU_COLORS, CSS4_COLORS
 
 import util.oms as o
 import util.utility as u
@@ -27,21 +28,27 @@ if __name__ == "__main__":
 
     runs = []
     color = [ "tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
-              "tab:pink", "tab:brown", "tab:gray", "tab:olive", "tab:cyan",
-              "tab:yellow", "tab:bluegreen", "tab:orangebrown", "tab:greenyellow", "tab:redorange",
-              "tab:purpleblue", "tab:pinkred", "tab:graybrown", "tab:greenyellow", "tab:lightblue" ]
+              "tab:pink", "tab:brown", "tab:gray", "tab:olive", "tab:cyan" ]
+    
     color_runs = []
     for str_run in inputruns:
         parts = str_run.split(":")
         runs.append(parts[0])
+        cc = ""
         if len(parts) > 1:
-            cc = "tab:" + parts[1]
+            ci = parts[1]
+            if "tab:" + ci in TABLEAU_COLORS:
+                cc = "tab:" + ci
+            elif ci in CSS4_COLORS:
+                cc = ci;
             if cc in color:
                 color.remove(cc)
-        else:
-            cc = color.pop(0) if color else "black"
+
+        if cc == "":
+            cc = color.pop(0) if color else "tab:gray"
 
         color_runs.append(cc)
+        
     
     print("L1 rate option: \033[4m", end = "")
     key_l1 = "pre_dt_before_prescale_rate"
