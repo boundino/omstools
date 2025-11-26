@@ -13,7 +13,7 @@ def getcount(runlumijson, path, omsapi = o.omsapi):
         varname = "path_name"
         attname = "counter"
     else:
-        print(f'\033[2mConsider {path} is a stream rather than HLT\033[0m')
+        # print(f'\033[2m{path} is a stream rather than HLT\033[0m')
         queryname = "streams"
         varname = "stream_name"
         attname = "n_events"
@@ -100,9 +100,10 @@ if __name__ == "__main__":
         pathnames = o.get_hltlist_by_run(list(runlumi.keys())[0])
     
     counts = {}
-    maxlen = 0
+    title = "HLT Path / Stream"
+    maxlen = len(title)
     with open(outputfile, 'w') as f:
-        print("HLT Path / Stream, Counts", file = f)
+        print(f"{title}, Count", file = f)
         for p in pathnames:
             totalcount = getcount(runlumi, p)
             print(p + ", " + f'{totalcount}', file = f)
@@ -111,7 +112,7 @@ if __name__ == "__main__":
 
     nl = 21 + maxlen
     print('-' * nl)
-    print('| {:<{width}} |{:>15} |'.format("HLT Path / Stream", "Count", width = maxlen))
+    print('| {:<{width}} |{:>15} |'.format(title, "Count", width = maxlen))
     print('-' * nl)
     for p in counts:
         print('| {:<{width}} |{:>15} |'.format(p, counts[p], width = maxlen))

@@ -85,7 +85,7 @@ options:
 * Example 1 (Use lumiranges)
     - Command
     ```
-    python3 hltcount.py --lumiranges 374763-374778,374797-374834 --pathnames HLT_HIMinimumBiasHF1ANDZDC1nOR_v1,HLT_HIMinimumBiasHF1AND_v3
+    python3 hltcount.py --lumiranges 374763-374778,374797-374834 --pathnames HLT_HIMinimumBiasHF1ANDZDC1nOR_v1,HLT_HIMinimumBiasHF1AND_v3,PhysicsHIPhysicsRawPrime10
     ```
     - Screen
     ```
@@ -93,10 +93,11 @@ options:
     Extracting lumisections with stable beams...
     Summing up lumi sections: {'374763': [[68, 106]], '374764': [[1, 31]], '374765': [[1, 28]], '374766': [[1, 34]], '374767': [[1, 32]], '374768': [[1, 31]], '374778': [[36, 287]], '374803': [[5, 592]], '374804': [[1, 14]], '374810': [[49, 1748]], '374828': [[24, 66]], '374833': [[67, 304]], '374834': [[1, 12]]}
     ------------------------------------------------------
-    | HLT Path                          |          Count |
+    | HLT Path / Stream                 |          Count |
     ------------------------------------------------------
     | HLT_HIMinimumBiasHF1ANDZDC1nOR_v1 |     1031991933 |
     | HLT_HIMinimumBiasHF1AND_v3        |         811481 |
+    | PhysicsHIPhysicsRawPrime10        |       36520625 |
     ------------------------------------------------------
     ```
 
