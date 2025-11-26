@@ -68,9 +68,10 @@ options:
     Different runs may share the same color, which can sometimes make the results easier to interpret.
 
 ### `hltcount.py`
-* Print HLT counts in given lumi ranges 
+* Print event counts of HLT or stream in given lumi ranges 
 ```
 usage: hltcount.py [-h] (--lumiranges LUMIRANGES | --timerange TIMERANGE) --pathnames PATHNAMES [--outcsv OUTCSV]
+Print HLT counts or number of events in a stream in given lumi ranges of runs
 options:
   -h, --help            show this help message and exit
   --lumiranges LUMIRANGES
@@ -78,7 +79,7 @@ options:
   --timerange TIMERANGE
                         (option 3) <start_time>,<end_time>
   --pathnames PATHNAMES
-                        List of HLT paths, (option 1) HLT_1,HLT_2,HLT_3; (option 2) .txt file with each line as an HLT path
+                        List of HLT paths or stream names, (option 1) HLT_1,PhysicsHIPhysicsStream_1,HLT_2; (option 2) .txt file with each line as an HLT path or stream name
   --outcsv OUTCSV       Optional csv output file
 ```
 * Example 1 (Use lumiranges)

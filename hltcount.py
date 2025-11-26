@@ -7,13 +7,24 @@ import util.utility as u
 import util.oms as o
 
 def getcount(runlumijson, path, omsapi = o.omsapi):
-    q = omsapi.query("hltpathrates")
+    isHLT = ("HLT_" in path)
+    if isHLT:
+        queryname = "hltpathrates"
+        varname = "path_name"
+        attname = "counter"
+    else:
+        print(f'\033[2mConsider {path} is a stream rather than HLT\033[0m')
+        queryname = "streams"
+        varname = "stream_name"
+        attname = "n_events"
+        
+    q = omsapi.query(queryname)
     q.paginate(per_page = 3000)
     q.set_verbose(False)
     totalcount = 0
     for run in runlumijson:
         q.clear_filter()
-        q.filter("path_name", path).filter("run_number", run)
+        q.filter(varname, path).filter("run_number", run)
         if not q.data().json()["data"]:
             print("\033[31mwarning: bad path name or run number: \"\033[4m" + path + ", " + run + "\033[0m\033[31m\", skip it..\033[0m")
             continue
@@ -26,16 +37,16 @@ def getcount(runlumijson, path, omsapi = o.omsapi):
 
             datajson = q.data().json()
             for ls in datajson["data"]:
-                totalcount += ls["attributes"]["counter"]
+                totalcount += ls["attributes"][attname]
 
     return totalcount
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description = 'Print HLT counts in given lumi ranges of runs')
+    parser = argparse.ArgumentParser(description = 'Print HLT counts or number of events in a stream in given lumi ranges of runs')
     group = parser.add_mutually_exclusive_group(required = True)
     group.add_argument('--lumiranges', help = '(option 1) <min_run>(:<LS>)-<max_run>(:<LS>) e.g. 374763-374778,374797-374834; (option 2) cert json file')
     group.add_argument('--timerange', help = '(option 3) <start_time>,<end_time>')
-    parser.add_argument('--pathnames', required = True, help = 'List of HLT paths, (option 1) HLT_1,HLT_2,HLT_3; (option 2) .txt file with each line as an HLT path')
+    parser.add_argument('--pathnames', required = True, help = 'List of HLT paths or stream names, (option 1) HLT_1,PhysicsHIPhysicsStream_1,HLT_2; (option 2) .txt file with each line as an HLT path or stream name')
     parser.add_argument('--outcsv', required = False, help = 'Optional csv output file')
     args = parser.parse_args()
 
@@ -91,7 +102,7 @@ if __name__ == "__main__":
     counts = {}
     maxlen = 0
     with open(outputfile, 'w') as f:
-        print("HLT Path, Counts", file = f)
+        print("HLT Path / Stream, Counts", file = f)
         for p in pathnames:
             totalcount = getcount(runlumi, p)
             print(p + ", " + f'{totalcount}', file = f)
@@ -100,7 +111,7 @@ if __name__ == "__main__":
 
     nl = 21 + maxlen
     print('-' * nl)
-    print('| {:<{width}} |{:>15} |'.format("HLT Path", "Count", width = maxlen))
+    print('| {:<{width}} |{:>15} |'.format("HLT Path / Stream", "Count", width = maxlen))
     print('-' * nl)
     for p in counts:
         print('| {:<{width}} |{:>15} |'.format(p, counts[p], width = maxlen))
