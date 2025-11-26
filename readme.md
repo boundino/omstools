@@ -12,7 +12,7 @@ git clone git@github.com:boundino/omstools.git
 cd omstools/
 ```
 * Add requirements
-    - On private computer
+    - On private computer (Recommended)
     ```
     python3 -m venv .venv # suggest using virtual environment
     . .venv/bin/activate # activate the env every time you run the macro
