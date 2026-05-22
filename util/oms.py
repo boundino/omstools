@@ -252,7 +252,7 @@ def get_rate_by_runls(run, ls = None, category = "hlt", path = None):
             q.custom("group[granularity]", "run")
     else:
         q.custom("group[granularity]", "lumisection")
-        if ls > 0:
+        if int(ls) > 0:
             q.filter("lumisection_number", ls)
         
     datas = []
