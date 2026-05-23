@@ -84,10 +84,16 @@ def filljs(runs, outdir):
 
 if __name__ == "__main__":
 
-    start_time = "2025-06-27"
-    end_time = "2025-07-11"
+    # start_time = "2025-06-27"
+    # end_time = "2025-07-11"
     # runs = o.get_runs_by_starttime(start_time, end_time)
     # filljs(runs, '../cms-hin-coordination/webs/public/datasets/Run2025OXY/js/')
+
+    runs_HIRun2026A = o.get_by_range(var = "era", lmin = "HIRun2026A", lmax = "HIRun2026A", category = "runs", per_page = 100)
+    filljs(runs_HIRun2026A, '../../cms-hin-coordination/webs/public/datasets/HIRun2026A/js/')
+
+    # runs_HIRun2025A = o.get_by_range(var = "era", lmin = "HIRun2025A", lmax = "HIRun2025A", category = "runs", per_page = 100)
+    # filljs(runs_HIRun2025A, '../cms-hin-coordination/webs/public/datasets/HIRun2025A/js/')
 
     # runs_NeNeRun2025 = o.get_by_range(var = "era", lmin = "NeNeRun2025", lmax = "NeNeRun2025", category = "runs", per_page = 100)
     # filljs(runs_NeNeRun2025, '../cms-hin-coordination/webs/public/datasets/NeNeRun2025/js/')
