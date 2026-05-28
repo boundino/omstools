@@ -27,8 +27,9 @@ if __name__ == "__main__":
         outputname = f'{outputname}_{args.label}'
 
     runs = []
-    color = [ "tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
-              "tab:pink", "tab:brown", "tab:gray", "tab:olive", "tab:cyan" ]
+    # color = [ "tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",
+    #           "tab:pink", "tab:brown", "tab:gray", "tab:olive", "tab:cyan" ]
+    color = [ "#297270", "#f3a361", "#274753", "#e7c66b", "#8ab07c", "#297270", "#e66d50" ]
     
     color_runs = []
     for str_run in inputruns:
@@ -39,7 +40,7 @@ if __name__ == "__main__":
             ci = parts[1]
             if "tab:" + ci in TABLEAU_COLORS:
                 cc = "tab:" + ci
-            elif ci in CSS4_COLORS:
+            else:
                 cc = ci;
             if cc in color:
                 color.remove(cc)
@@ -48,8 +49,7 @@ if __name__ == "__main__":
             cc = color.pop(0) if color else "tab:gray"
 
         color_runs.append(cc)
-        
-    
+
     print("L1 rate option: \033[4m", end = "")
     key_l1 = "pre_dt_before_prescale_rate"
     if args.l1postdt:
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     if not trigtype:
         print("error: pathname is not L1_ or HLT_")
         quit()
-    
+        
     results = {}
 
     for run in runs:
@@ -78,7 +78,7 @@ if __name__ == "__main__":
         lumisections = o.get_by_range("run_number", run, run, "lumisections", per_page = 100, onlystable = stable_only)
         print("\033[2mGetting rate...\033[0m")
         rates = o.get_rate_by_runls(run, 0, category = trigtype, path = pathname)
-    
+        
         results[run] = []
         for d in lumisections:
             attr = d["attributes"]
@@ -123,6 +123,7 @@ if __name__ == "__main__":
         for ls in results[run]:
             x.append(ls["init_lumi"])
             y.append(ls["rate"])
+
         plt.scatter(x, y, s=20, c=color_runs[i], alpha=0.5, label=u.mystr(run))
         i = i+1
 
