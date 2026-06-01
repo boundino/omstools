@@ -3,6 +3,7 @@ import argparse
 import sys
 import os
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from matplotlib.colors import TABLEAU_COLORS, CSS4_COLORS
 
 import util.oms as o
@@ -115,25 +116,30 @@ if __name__ == "__main__":
                     print(u.mystr(ele[e]) + ", ", file = f, end = "")
                 print(file = f)
 
+
+    # --- Scatter plots ---
     plt.figure(figsize=(6, 6))
-    i = 0
-    for run in results:
-        x = []
-        y = []
-        for ls in results[run]:
-            x.append(ls["init_lumi"])
-            y.append(ls["rate"])
+    ax = plt.gca()
+
+    ax.set_axisbelow(True)
+    plt.grid(True, linestyle="--", linewidth=0.7, color="lightgray", alpha=0.7)
+    
+    for i, run in enumerate(results):
+
+        x = [ls["init_lumi"] for ls in results[run]]
+        y = [ls["rate"] for ls in results[run]]
 
         plt.scatter(x, y, s=20, c=color_runs[i], alpha=0.5, label=u.mystr(run))
-        i = i+1
 
-    plt.xlabel(r"Inst luminosity [10$^{33}$ cm$^{-2}$ s$^{-1}$]")
+    plt.xlabel(r"Instantaneous luminosity [$10^{33}$ cm$^{-2}$ s$^{-1}$]")
     plt.ylabel("Rate")
-    plt.title(pathname)
-    plt.legend(frameon = False, loc = 'best', bbox_to_anchor = (0.26, 0.98))
+    plt.title(pathname, weight="semibold", fontsize=11)
 
-    plt.xlim(left=0)  # Set minimum value of x-axis to 0
-    plt.ylim(bottom=0)  # Set minimum value of y-axis to 0
+    plt.legend(frameon = False, loc = 'best', bbox_to_anchor = (0.26, 0.98), fontsize=11)
+    plt.xlim(left=0)
+    plt.ylim(bottom=0)
+
+    plt.tight_layout()
 
     os.system('mkdir -p figs')
     figname = 'figs/' + outputname + '.png'
